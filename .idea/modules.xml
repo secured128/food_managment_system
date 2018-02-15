@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../food-managment/.idea/modules/food-managment.iml" filepath="$PROJECT_DIR$/../food-managment/.idea/modules/food-managment.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../food-managment/.idea/modules/food-managment_main.iml" filepath="$PROJECT_DIR$/../food-managment/.idea/modules/food-managment_main.iml" group="food-managment" />
-      <module fileurl="file://$PROJECT_DIR$/../food-managment/.idea/modules/food-managment_test.iml" filepath="$PROJECT_DIR$/../food-managment/.idea/modules/food-managment_test.iml" group="food-managment" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/food-managment.iml" filepath="$PROJECT_DIR$/.idea/modules/food-managment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/food-managment_main.iml" filepath="$PROJECT_DIR$/.idea/modules/food-managment_main.iml" group="food-managment" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/food-managment_test.iml" filepath="$PROJECT_DIR$/.idea/modules/food-managment_test.iml" group="food-managment" />
     </modules>
   </component>
 </project>
