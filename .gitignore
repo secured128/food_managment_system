@@ -1,2 +1,2 @@
-/build
-/build/resources/main/application.properties
+/build/
+/.gradle/
