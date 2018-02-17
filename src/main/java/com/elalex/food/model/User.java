@@ -1,4 +1,4 @@
-package com.elalex.model;
+package com.elalex.food.model;
 
 
 import javax.persistence.*;

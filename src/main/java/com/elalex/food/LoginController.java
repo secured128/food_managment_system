@@ -1,4 +1,4 @@
-package com.elalex;
+package com.elalex.food;
 
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
