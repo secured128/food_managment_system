@@ -1,6 +1,7 @@
 package com.elalex.food.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -17,9 +18,10 @@ import java.io.StringWriter;
 @Table(name = "users")
 public class User implements Serializable {
 
-//    private static final long serialVersionUID = -3009157732242241606L;
+    private static final long serialVersionUID = -3009157732242241606L;
 
-    private ObjectMapper jsonMapper = new ObjectMapper();
+//    @JsonIgnore
+//    private ObjectMapper jsonMapper = new ObjectMapper();
 
     @JsonProperty("id")
     @Id
@@ -70,7 +72,7 @@ public class User implements Serializable {
     public String toString() {
         StringWriter sw = new StringWriter();
         try {
-            jsonMapper.writeValue(sw, this);
+            new ObjectMapper().writeValue(sw, this);
             return sw.toString();
         } catch (IOException e) {
             e.printStackTrace();
