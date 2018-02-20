@@ -20,8 +20,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -3009157732242241606L;
 
-//    @JsonIgnore
-//    private ObjectMapper jsonMapper = new ObjectMapper();
+    @JsonIgnore
+    private ObjectMapper jsonMapper = new ObjectMapper();
 
     @JsonProperty("id")
     @Id
@@ -72,7 +72,7 @@ public class User implements Serializable {
     public String toString() {
         StringWriter sw = new StringWriter();
         try {
-            new ObjectMapper().writeValue(sw, this);
+            jsonMapper.writeValue(sw, this);
             return sw.toString();
         } catch (IOException e) {
             e.printStackTrace();
