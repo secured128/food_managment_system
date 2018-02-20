@@ -1,4 +1,4 @@
-package com.elalex.food;
+package com.elalex;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
