@@ -1,8 +1,8 @@
--- Table: public.users
+-- Table: users
 
--- DROP TABLE public.users;
+-- DROP TABLE users;
 
-CREATE TABLE public.users
+CREATE TABLE users
 (
     id bigint NOT NULL,
     name character varying(255) COLLATE pg_catalog."default",
@@ -14,5 +14,5 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.users
+ALTER TABLE users
     OWNER to food_manager;

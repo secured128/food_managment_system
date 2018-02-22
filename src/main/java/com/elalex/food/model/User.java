@@ -20,8 +20,9 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -3009157732242241606L;
 
-//    @JsonIgnore
-//    private ObjectMapper jsonMapper = new ObjectMapper();
+    @JsonIgnore
+    @Transient
+    private ObjectMapper jsonMapper = new ObjectMapper();
 
     @JsonProperty("id")
     @Id
