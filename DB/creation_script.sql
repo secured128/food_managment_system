@@ -16,3 +16,10 @@ TABLESPACE pg_default;
 
 ALTER TABLE users
     OWNER to food_manager;
+
+-- Index: user_unique_idx
+
+-- DROP INDEX user_unique_idx;
+
+CREATE UNIQUE INDEX user_unique_idx
+    ON users USING btree(name);

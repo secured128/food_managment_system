@@ -15,7 +15,7 @@ import java.io.StringWriter;
 @JsonPropertyOrder({"id", "name", "password"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {@Index(name = "user_unique_idx", columnList = "name", unique = true)})
 public class User implements Serializable {
 
     private static final long serialVersionUID = -3009157732242241606L;
@@ -44,6 +44,13 @@ public class User implements Serializable {
         this.setName(name);
         this.setPassword(password);
     }
+
+    public User(String json) throws Exception {
+        User user = jsonMapper.readValue(json, User.class);
+        this.setName(user.getName());
+        this.setPassword(user.getPassword());
+    }
+
 
     public long getId() {
         return id;
