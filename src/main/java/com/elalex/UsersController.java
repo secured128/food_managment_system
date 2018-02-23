@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -31,6 +35,39 @@ public class UsersController {
             User user = usersRepository.findByNameAndPassword(userToFind.getName(), userToFind.getPassword());
             if (user != null) {
                 return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(method = GET, path = "/find/{nameStart}")
+    public ResponseEntity<List<User>> find(@PathVariable String nameStart) {
+        try {
+            List<User> users = usersRepository.findByNameStartsWithIgnoreCase(nameStart);
+            if (users != null) {
+                return ResponseEntity.ok(users);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(method = GET, path = "/find")
+    public ResponseEntity<List<User>> find() {
+        try {
+            List<User> usersList = new ArrayList<>();
+            Iterable<User> users = usersRepository.findAll();
+            if (users != null) {
+                Iterator<User> userIterator = users.iterator();
+                while (userIterator.hasNext()) {
+                    usersList.add(userIterator.next());
+                }
+                return ResponseEntity.ok(usersList);
             } else {
                 return ResponseEntity.notFound().build();
             }
