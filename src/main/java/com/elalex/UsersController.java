@@ -3,6 +3,7 @@ package com.elalex;
 import com.elalex.food.model.User;
 import com.elalex.food.model.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,10 +101,17 @@ public class UsersController {
         return user.toString();
     }
 
-    @RequestMapping(method = POST, path = "/user/create")
-    public ResponseEntity<User> create(@RequestBody User userToCreate) {
+    @RequestMapping(method = POST, path = "/user/save")
+    public ResponseEntity<User> save(@RequestBody User userToCreate) {
         try {
-            User user = new User(userToCreate.getName(), userToCreate.getPassword());
+            User user = null;
+            if(userToCreate.getId()>0){
+                user = usersRepository.findOne(userToCreate.getId());
+                user.setName(userToCreate.getName());
+                user.setPassword(userToCreate.getPassword());
+            }else {
+                 user = new User(userToCreate.getName(), userToCreate.getPassword());
+            }
             user = usersRepository.save(user);
             if (user != null) {
                 return ResponseEntity.ok(user);
@@ -111,10 +119,24 @@ public class UsersController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
+    @RequestMapping(method = POST, path = "/user/delete")
+    public ResponseEntity<HttpStatus> delete(@RequestBody User userToCreate) {
+        try {
+            User user = usersRepository.findOne(userToCreate.getId());
+            usersRepository.delete(user);
+            if (user != null) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 //    @RequestMapping(value = "/user", method = RequestMethod.POST)
 //    ResponseEntity<User> add(@RequestBody User userToFind) {
 //        try {
