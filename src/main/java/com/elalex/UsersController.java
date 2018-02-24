@@ -100,6 +100,21 @@ public class UsersController {
         return user.toString();
     }
 
+    @RequestMapping(method = POST, path = "/user/create")
+    public ResponseEntity<User> create(@RequestBody User userToCreate) {
+        try {
+            User user = new User(userToCreate.getName(), userToCreate.getPassword());
+            user = usersRepository.save(user);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 //    @RequestMapping(value = "/user", method = RequestMethod.POST)
 //    ResponseEntity<User> add(@RequestBody User userToFind) {
 //        try {
