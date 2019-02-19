@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -88,29 +89,31 @@ public class UsersController {
      */
     @RequestMapping(value = "/user/{id}", method = GET)
     @ResponseBody
-    public String getUser(@PathVariable long id) {
+    public User getUser(@PathVariable long id, HttpServletResponse response) {
+        addHeader(response);
         User user = usersRepository.findOne(id);
-        return user.toString();
+        return user;
     }
 
     @RequestMapping(value = "/user/create/{name}", method = GET)
     @ResponseBody
-    public String CreateUser(@PathVariable String name) {
+    public User CreateUser(@PathVariable String name, HttpServletResponse response) {
+        addHeader(response);
         User user = new User(name, name);
         user = usersRepository.save(user);
-        return user.toString();
+        return user;
     }
 
     @RequestMapping(method = POST, path = "/user/save")
     public ResponseEntity<User> save(@RequestBody User userToCreate) {
         try {
             User user = null;
-            if(userToCreate.getId()>0){
+            if (userToCreate.getId() > 0) {
                 user = usersRepository.findOne(userToCreate.getId());
                 user.setName(userToCreate.getName());
                 user.setPassword(userToCreate.getPassword());
-            }else {
-                 user = new User(userToCreate.getName(), userToCreate.getPassword());
+            } else {
+                user = new User(userToCreate.getName(), userToCreate.getPassword());
             }
             user = usersRepository.save(user);
             if (user != null) {
@@ -152,10 +155,13 @@ public class UsersController {
 //    }
 
 
-    @RequestMapping(value = "/", method = GET)
-    @ResponseBody
-    public String getApiInfo() {
-        return "Welcome to Food Manger API";
+    private void addHeader(HttpServletResponse response) {
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Access-Control-Allow-Methods", "GET");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
     }
 
 }
