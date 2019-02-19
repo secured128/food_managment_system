@@ -152,4 +152,10 @@ public class UsersController {
 //    }
 
 
+    @RequestMapping(value = "/", method = GET)
+    @ResponseBody
+    public String getApiInfo() {
+        return "Welcome to Food Manger API";
+    }
+
 }
