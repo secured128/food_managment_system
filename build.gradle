@@ -33,3 +33,7 @@ dependencies {
 }
 
 compileJava.options.encoding = 'UTF-8'
+
+bootRepackage {
+    mainClass = 'com.elalex.Application'
+}
