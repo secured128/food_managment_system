@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -26,7 +27,7 @@ public class UsersController {
     @Autowired
     private UsersRepository usersRepository;
 
-    @RequestMapping(method = POST, path = "/hellow")
+    @RequestMapping(method = GET, path = "/hello")
     public String sayHellow(@RequestHeader(value = "name", defaultValue = "World") String name) {
         return String.format(template, name);
     }
@@ -91,8 +92,8 @@ public class UsersController {
     @ResponseBody
     public User getUser(@PathVariable long id, HttpServletResponse response) {
         addHeader(response);
-        User user = usersRepository.findOne(id);
-        return user;
+        Optional<User> userOptional = usersRepository.findById(id);
+        return userOptional.get();
     }
 
     @RequestMapping(value = "/user/create/{name}", method = GET)
@@ -109,7 +110,8 @@ public class UsersController {
         try {
             User user = null;
             if (userToCreate.getId() > 0) {
-                user = usersRepository.findOne(userToCreate.getId());
+                Optional<User> userOptional = usersRepository.findById(userToCreate.getId());
+                user = userOptional.get();
                 user.setName(userToCreate.getName());
                 user.setPassword(userToCreate.getPassword());
             } else {
@@ -129,7 +131,8 @@ public class UsersController {
     @RequestMapping(method = POST, path = "/user/delete")
     public ResponseEntity<HttpStatus> delete(@RequestBody User userToCreate) {
         try {
-            User user = usersRepository.findOne(userToCreate.getId());
+            Optional<User> userOptional = usersRepository.findById(userToCreate.getId());
+            User user = userOptional.get();
             usersRepository.delete(user);
             if (user != null) {
                 return ResponseEntity.ok().build();

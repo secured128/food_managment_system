@@ -2,9 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="com.elalex-food-managment_main" target="1.8" />
       <module name="com.elalex-food-managment_test" target="1.8" />
       <module name="food-managment_main" target="1.8" />
       <module name="food-managment_test" target="1.8" />
+      <module name="parisbakery_main" target="1.8" />
+      <module name="parisbakery_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -2,13 +2,13 @@ Heroku commands :
 
 heroku login
 heroku container:login (pojhi9078-!)
-heroku container:push web -a life-project
-heroku container:release web -a life-project
-heroku open -a life-project
+heroku container:push web -a parisbakery
+heroku container:release web -a parisbakery
+heroku open -a parisbakery
 
 Local run :
 
-docker run -p 8080:8080 life-project/life-project:latest
+docker run -p 8080:8080 parisbakery/life-project:latest
 
 
 

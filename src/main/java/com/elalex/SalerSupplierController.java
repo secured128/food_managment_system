@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -83,13 +84,11 @@ public class SalerSupplierController {
     @RequestMapping(value = "/Supplier/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<SupplierDB> getSupplier(@PathVariable long id) {
-        SupplierDB supplier = supplierDBRepository.findOne(id);
-        if (supplier != null)
-        {
+        Optional<SupplierDB> supplierOptional = supplierDBRepository.findById(id);
+        SupplierDB supplier = supplierOptional.get();
+        if (supplier != null) {
             return ResponseEntity.ok(supplier);
-        }
-        else
-        {
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
@@ -106,12 +105,13 @@ public class SalerSupplierController {
     public ResponseEntity<SupplierDB> save(@RequestBody SupplierDB supplierToCreate) {
         try {
             SupplierDB supplier = null;
-            if(supplierToCreate.getId()>0){
-                supplier = supplierDBRepository.findOne(supplierToCreate.getId());
+            if (supplierToCreate.getId() > 0) {
+                Optional<SupplierDB> supplierOptional = supplierDBRepository.findById(supplierToCreate.getId());
+                supplier = supplierOptional.get();
                 supplier.setName(supplierToCreate.getName());
-            }else {
+            } else {
                 String json1 = "23";
-                supplier = new SupplierDB( json1);
+                supplier = new SupplierDB(json1);
             }
             supplier = supplierDBRepository.save(supplier);
             if (supplier != null) {
@@ -127,7 +127,9 @@ public class SalerSupplierController {
     @RequestMapping(method = POST, path = "/Supplier/delete")
     public ResponseEntity<HttpStatus> delete(@RequestBody SupplierDB SupplierToCreate) {
         try {
-            SupplierDB supplier = supplierDBRepository.findOne(SupplierToCreate.getId());
+            Optional<SupplierDB> supplierOptional = supplierDBRepository.findById(SupplierToCreate.getId());
+            SupplierDB supplier = supplierOptional.get();
+
             supplierDBRepository.delete(supplier);
             if (supplier != null) {
                 return ResponseEntity.ok().build();

@@ -1,0 +1,48 @@
+---
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+  level:
+    org:
+      springframework: INFO
+management:
+  server:
+    address: 127.0.0.1
+    port: 9001
+spring:
+  jpa:
+    swow-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    tomcat:
+      max-wait: 10000
+      max-active: 25
+      max-idle: 24
+      min-idle: 1
+      test-on-borrow: false
+---
+server:
+  port: ${8000:8080}
+spring:
+  profiles: dev
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  datasource:
+    url: jdbc:postgresql://localhost/food_managment_db
+    driver: org.postgresql.Driver
+    username: food_manager
+    password : food_manager123
+---
+server:
+  port: ${PORT:8080}
+spring:
+  profiles: prod
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  datasource:
+    url: ec2-46-137-75-170.eu-west-1.compute.amazonaws.com/ddoivvf5hp34fe
+    driver: org.postgresql.Driver
+    username: rouxlpsmddebnf
+    password : 58daf8d56eaac2ba3a4cef83203776ca2335e98e0675ad6624507d7dd3b5f302
+---

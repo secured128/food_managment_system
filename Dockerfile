@@ -11,12 +11,10 @@ VOLUME /tmp
 EXPOSE 8080
 
 # The application's jar file
-ARG JAR_FILE=build/libs/food-managment-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/parisbakery-0.0.1-SNAPSHOT.jar
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} food-managment.jar
+ADD ${JAR_FILE} parisbakery.jar
 
 # Run the jar file 
-#ENTRYPOINT ["java","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","-Dspring.server.port=$PORT","-jar","/life-project.jar"]
-
-CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","/food-managment.jar"]
+CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","/parisbakery.jar"]

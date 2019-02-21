@@ -1,17 +1,26 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.9.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
+        gradleDockerPluginVersion = '0.20.1'
     }
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("gradle.plugin.com.palantir.gradle.docker:gradle-docker:${gradleDockerPluginVersion}")
     }
 }
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: "com.palantir.docker"
 
 group = 'com.elalex'
 version = '0.0.1-SNAPSHOT'
@@ -22,19 +31,33 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
     runtime('org.postgresql:postgresql')
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile "org.hibernate:hibernate-envers:5.0.11.Final"
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
+    testCompile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
 }
 
 compileJava.options.encoding = 'UTF-8'
 
-bootRepackage {
-    mainClass = 'com.elalex.Application'
+jar {
+    doFirst {
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                        'Class-Path': configurations.compile.collect { it.toURI().toString() }.join(' '),
+                        'Main-Class': 'lcom.elalex.Application')
+            }
+        }
+    }
+}
+
+docker {
+    dependsOn build
+    name "${project.group}/${bootJar.baseName}"
+    files bootJar.archivePath
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
 }
