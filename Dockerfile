@@ -17,4 +17,4 @@ ARG JAR_FILE=build/libs/parisbakery-0.0.1-SNAPSHOT.jar
 ADD ${JAR_FILE} parisbakery.jar
 
 # Run the jar file 
-CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","/parisbakery.jar"]
+CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=prod","/parisbakery.jar"]
