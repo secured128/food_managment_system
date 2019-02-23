@@ -1,7 +1,7 @@
 Heroku commands :
 
 heroku login
-heroku container:login (pojhi9078-!)
+heroku container:login (pojhi9078!)
 heroku container:push web -a parisbakery
 heroku container:release web -a parisbakery
 heroku open -a parisbakery
