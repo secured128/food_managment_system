@@ -8,7 +8,7 @@ heroku open -a parisbakery
 
 Local run :
 
-docker run -p 8080:8080 parisbakery/life-project:latest
+docker run -p 8080:8080 parisbakery/parisbakery:latest
 
 
 
