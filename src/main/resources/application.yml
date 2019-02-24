@@ -38,9 +38,9 @@ server:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:postgresql://ec2-46-137-75-170.eu-west-1.compute.amazonaws.com/ddoivvf5hp34fe
-    username: rouxlpsmddebnf
-    password : 58daf8d56eaac2ba3a4cef83203776ca2335e98e0675ad6624507d7dd3b5f302
+    url: jdbc:postgresql://ec2-54-75-245-94.eu-west-1.compute.amazonaws.com/dchu7g5m9qqj7o
+    username: csvafbqryklaww
+    password : 9c260b7f80fa4b5431cfff4d11db60f2a05bf2fc775a958e2f8b0569d6ee8f9e
 server:
   port: ${PORT:8080}
 ---
