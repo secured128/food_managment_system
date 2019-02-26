@@ -10,11 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.net.*;
+import java.io.*;
 
+import static java.lang.System.in;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -55,5 +61,26 @@ public class SalerSupplierController {
         }
     }
 
+    @RequestMapping(method = POST, path = "/uploadFile/{url}")
 
-}
+        public ResponseEntity<List<SupplierDB>> readFile(@PathVariable String url ,HttpServletResponse response) {
+             try {
+                 System.out.println("hiii");
+                 List<SupplierDB> suppliersList = new ArrayList<>();
+                 URL fileName = new URL(url);
+                 System.out.println(url);
+                 BufferedReader in = new BufferedReader(
+                         new InputStreamReader(fileName.openStream()));
+
+                 String inputLine;
+                 while ((inputLine = in.readLine()) != null)
+                     System.out.println(inputLine);
+                 in.close();
+                 return ResponseEntity.ok(suppliersList);
+             }
+     catch (Exception e) {
+        return ResponseEntity.badRequest().build();
+        }
+
+
+}}
