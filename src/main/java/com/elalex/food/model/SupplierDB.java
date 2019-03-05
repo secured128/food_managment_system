@@ -63,15 +63,16 @@ public class SupplierDB implements Serializable
     {
     }
 
-    public SupplierDB(String name, String address, String telephone, String fax, String email, String companyNo)
+    public SupplierDB(  String dbStructure[])
     {
-        this.setName(name);
-        this.setAddress(address);
-        this.setCity(city);
-        this.setTelephone(telephone);
-        this.setFax(fax);
-        this.setEmail(email);
-        this.setCompanyNo(companyNo);
+        //this.setId( Long.parseLong(id));
+        this.setName(dbStructure[1]);
+        this.setAddress(dbStructure[2]);
+        this.setCity(dbStructure[3]);
+        this.setTelephone(dbStructure[4]);
+        this.setFax(dbStructure[5]);
+        this.setEmail(dbStructure[6]);
+        this.setCompanyNo(dbStructure[7]);
     }
 
     public SupplierDB(String json) throws Exception

@@ -12,5 +12,4 @@ public interface UsersRepository extends CrudRepository<User, Long> {
 
     List<User> findByNameStartsWithIgnoreCase(String name);
 
-
 }

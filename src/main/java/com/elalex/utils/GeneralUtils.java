@@ -11,4 +11,13 @@ public class GeneralUtils {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
     }
+
+    public static void addHeaderPost(HttpServletResponse response) {
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+    }
 }

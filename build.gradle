@@ -36,6 +36,9 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile group: 'net.sf.opencsv', name: 'opencsv', version: '2.3'
+    compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.1'
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
     testCompile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'

@@ -1,28 +1,20 @@
 package com.elalex;
 
+import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
 import com.elalex.food.model.SupplierDB;
 import com.elalex.food.model.SupplierDBRepository;
-import com.elalex.food.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.net.*;
-import java.io.*;
 
-import static java.lang.System.in;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * https://spring.io/guides/tutorials/bookmarks/
@@ -61,21 +53,25 @@ public class SalerSupplierController {
         }
     }
 
-    @RequestMapping(method = POST, path = "/uploadFile/{url}")
+    @RequestMapping(method = GET, path = "/uploadFile")
 
-        public ResponseEntity<List<SupplierDB>> readFile(@PathVariable String url ,HttpServletResponse response) {
+        public ResponseEntity<List<SupplierDB>> readFile( HttpServletResponse response, String url ) {
              try {
-                 System.out.println("hiii");
+                 GeneralUtils.addHeader(response);
+                 System.out.println("url "+url);
+                 int sizeOfParams=8;
                  List<SupplierDB> suppliersList = new ArrayList<>();
-                 URL fileName = new URL(url);
                  System.out.println(url);
-                 BufferedReader in = new BufferedReader(
-                         new InputStreamReader(fileName.openStream()));
+                 Excel2String excel2Csv = new Excel2String();
+                 List<String[]> suppDb = excel2Csv.convert2String( url, sizeOfParams);
+                 Iterator <String[]> iterator = suppDb.iterator();
 
-                 String inputLine;
-                 while ((inputLine = in.readLine()) != null)
-                     System.out.println(inputLine);
-                 in.close();
+                 while (iterator.hasNext()) {
+                    String[] nextRow = iterator.next();
+                    SupplierDB nextSupplDb = new SupplierDB(nextRow);
+                     nextSupplDb = supplierDBRepository.save(nextSupplDb);
+                     suppliersList.add(nextSupplDb);
+                 }
                  return ResponseEntity.ok(suppliersList);
              }
      catch (Exception e) {
