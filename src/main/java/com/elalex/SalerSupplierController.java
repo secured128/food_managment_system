@@ -1,5 +1,6 @@
 package com.elalex;
 
+import com.elalex.utils.CreatePdfFile;
 import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
 import com.elalex.food.model.SupplierDB;
@@ -72,6 +73,7 @@ public class SalerSupplierController {
                      nextSupplDb = supplierDBRepository.save(nextSupplDb);
                      suppliersList.add(nextSupplDb);
                  }
+                 CreatePdfFile.createPdfFile();
                  return ResponseEntity.ok(suppliersList);
              }
      catch (Exception e) {

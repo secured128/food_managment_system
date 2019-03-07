@@ -1,16 +1,18 @@
 package com.elalex;
 
+import com.elalex.utils.CreatePdfFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class myExe {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         SpringApplication.run(Application.class, args);
 
         logger.info("******************************************************************");
@@ -64,6 +66,8 @@ public class myExe {
 
 
         System.out.print("groupCounter" + groupCounter);
+        CreatePdfFile.createPdfFile();
+        sendEmailController.sendEmail();
     }
 
 }
