@@ -21,7 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * https://spring.io/guides/tutorials/bookmarks/
  */
 @RestController
-public class SalerSupplierController {
+public class SuppliersController {
 
     @Autowired
     private SupplierDBRepository supplierDBRepository;
@@ -32,6 +32,13 @@ public class SalerSupplierController {
         GeneralUtils.addHeader(response);
         Optional<SupplierDB> supplierDB = supplierDBRepository.findById(id);
         return supplierDB.get();
+    }
+    @RequestMapping(value = "/supplier/getByName", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<SupplierDB>>  getSupplierByName( HttpServletResponse response, String name) {
+        GeneralUtils.addHeader(response);
+        List<SupplierDB> supplierDBList = supplierDBRepository.findByNameStartsWithIgnoreCase(name);
+        return ResponseEntity.ok(supplierDBList);
     }
 
     @RequestMapping(method = GET, path = "/supplier/findAll")
@@ -54,31 +61,32 @@ public class SalerSupplierController {
         }
     }
 
-    @RequestMapping(method = GET, path = "/uploadFile")
 
-        public ResponseEntity<List<SupplierDB>> readFile( HttpServletResponse response, String url ) {
-             try {
-                 GeneralUtils.addHeader(response);
-                 System.out.println("url "+url);
-                 int sizeOfParams=8;
-                 List<SupplierDB> suppliersList = new ArrayList<>();
-                 System.out.println(url);
-                 Excel2String excel2Csv = new Excel2String();
-                 List<String[]> suppDb = excel2Csv.convert2String( url, sizeOfParams);
-                 Iterator <String[]> iterator = suppDb.iterator();
+    @RequestMapping(method = GET, path = "/uploadFile/Supplier")
 
-                 while (iterator.hasNext()) {
-                    String[] nextRow = iterator.next();
-                    SupplierDB nextSupplDb = new SupplierDB(nextRow);
-                     nextSupplDb = supplierDBRepository.save(nextSupplDb);
-                     suppliersList.add(nextSupplDb);
-                 }
-                 CreatePdfFile.createPdfFile();
-                 return ResponseEntity.ok(suppliersList);
-             }
-     catch (Exception e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<List<SupplierDB>> readFile( HttpServletResponse response, String url ) {
+        try {
+            GeneralUtils.addHeader(response);
+            System.out.println("url "+url);
+            int sizeOfParams=8;
+            List<SupplierDB> suppliersList = new ArrayList<>();
+            System.out.println(url);
+            Excel2String excel2Csv = new Excel2String();
+            List<String[]> suppDb = excel2Csv.convert2String( url, sizeOfParams);
+            Iterator <String[]> iterator = suppDb.iterator();
+
+            while (iterator.hasNext()) {
+                String[] nextRow = iterator.next();
+                SupplierDB nextSupplDb = new SupplierDB(nextRow);
+                nextSupplDb = supplierDBRepository.save(nextSupplDb);
+                suppliersList.add(nextSupplDb);
+            }
+            CreatePdfFile.createPdfFile();
+            return ResponseEntity.ok(suppliersList);
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
 
 
-}}
+    }}

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface SupplierDBRepository extends CrudRepository<SupplierDB, Long> {
 
-    SupplierDB findByName(String name);
+
 
     List<SupplierDB> findByNameStartsWithIgnoreCase(String name);
 
