@@ -23,6 +23,11 @@ public class findAllGroups {
 
         //Decide the number of friends
         System.out.print("Enter how many friends: ");
+        System.out.println(Integer.toBinaryString(3));
+        System.out.println(Integer.toBinaryString(55));
+        System.out.println(Integer.toBinaryString(98));
+        System.out.println(Integer.toBinaryString(101));
+        System.out.println(Integer.toBinaryString(198));
         int numOfFriends = Integer.parseInt(scan.nextLine());
 
 
@@ -43,7 +48,7 @@ public class findAllGroups {
             {
                 if (binary.charAt(b1)=='1')
                 {
-                    System.out.print(arrayOfNames[b1]+"    ");
+                    System.out.print(arrayOfNames[numOfFriends-binary.length()+b1]+"    ");
                 }
             }
             System.out.println('}');
