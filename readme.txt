@@ -1,5 +1,7 @@
 Heroku commands :
 
+
+sudo -s
 heroku login
 heroku container:login (pojhi9078!)
 heroku container:push web -a parisbakery

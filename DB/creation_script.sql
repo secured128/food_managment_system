@@ -48,13 +48,25 @@ WITH (
 ALTER TABLE public.suppliers
   OWNER TO food_manager;
 
+  CREATE TABLE public.units
+  (
+    unit_name character varying(255),
+    CONSTRAINT units_pkey PRIMARY KEY (unit_name)
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE public.units
+    OWNER TO food_manager;
+
+
 CREATE TABLE public.product
   (
     id bigint NOT NULL,
     code1 bigint,
     code2 bigint,
     description character varying(255),
-    id_unit bigint NOT NULL REFERENCES units(id),
+    unit character varying(255) NOT NULL REFERENCES units(unit_name),
     id_supplier bigint NOT NULL REFERENCES SUPPLIERS(id),
     quantity_in_package NUMERIC NOT NULL ,
     CONSTRAINT product_pkey PRIMARY KEY (id)
@@ -65,29 +77,62 @@ CREATE TABLE public.product
   ALTER TABLE public.product
     OWNER TO food_manager;
 
-CREATE TABLE public.recipe
+CREATE TABLE public.recipe_description
 (
-  id bigint NOT NULL,
-  name character varying(255),
+  recipe_name character varying(255),
   description character varying(255),
-  picture bytea,
-  CONSTRAINT recipe_pkey PRIMARY KEY (id),
-  CONSTRAINT recipe_unique_idx UNIQUE (name)
+  image bytea,
+  size_of_recipe numeric,
+  unit character varying(255) NOT NULL REFERENCES units(unit_name),
+  CONSTRAINT recipe_description_pkey PRIMARY KEY (recipe_name)
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.recipe
+ALTER TABLE public.recipe_description
   OWNER TO food_manager;
 
-CREATE TABLE public.units
+CREATE TABLE public.instructions_description
 (
-  id bigint NOT NULL,
-  unit_name character varying(255),
-  CONSTRAINT units_pkey PRIMARY KEY (id)
+  instruct_name character varying(255),
+  instruction_description character varying(255),
+  image bytea,
+    CONSTRAINT instructions_description_pkey PRIMARY KEY (instruct_name)
+
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.units
+ALTER TABLE public.instructions_description
   OWNER TO food_manager;
+
+  CREATE TABLE public.recipe_instructions_order
+  (
+    id bigint NOT NULL,
+    recipe_description_name character varying(255)  NOT NULL REFERENCES recipe_description(recipe_name),
+    instruction_name  character varying(255) NOT NULL REFERENCES instructions_description(instruct_name),
+    linked_recipe_desc_name character varying(255)  REFERENCES recipe_description(recipe_name),
+    quantity_of_linked_recipe numeric,
+    instruction_order integer,
+    CONSTRAINT recipe_instructions_order_pkey PRIMARY KEY (id)
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE public.recipe_instructions_order
+    OWNER TO food_manager;
+
+    CREATE TABLE public.recipe_products
+    (
+      id bigint NOT NULL,
+      recipe_desc_id  character varying(255) NOT NULL REFERENCES recipe_description(recipe_name),
+      product_id bigint NOT NULL REFERENCES product(id),
+      quantity numeric NOT NULL,
+      CONSTRAINT recipe_products_pkey PRIMARY KEY (id)
+    )
+    WITH (
+      OIDS=FALSE
+    );
+    ALTER TABLE public.recipe_products
+      OWNER TO food_manager;
+

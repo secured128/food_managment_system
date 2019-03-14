@@ -31,7 +31,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost/food_managment_db
     username: food_manager
-    password : food_manager123
+    password : food_managment_db
 server:
   port: ${8000:8080}
 ---
