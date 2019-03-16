@@ -1,0 +1,148 @@
+
+package com.elalex.food.model;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.persistence.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringWriter;
+
+
+
+//@JsonPropertyOrder({"id"})
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name = "product")
+public class ProductDB implements Serializable
+{
+    @JsonIgnore
+    @Transient
+    private ObjectMapper jsonMapper = new ObjectMapper();
+
+    @JsonProperty("id")
+    @Id
+    private Long id;
+
+    @JsonProperty("code1")
+    @Column(name = "code1")
+    private Long code1;
+
+    @JsonProperty("code2")
+    @Column(name = "code2")
+    private Long code2;
+
+    @JsonProperty("description")
+    @Column(name = "description")
+    private String description;
+
+    @JsonProperty("unit")
+    @Column(name = "unit")
+    private String unit;
+
+    @JsonProperty("idSupplier")
+    @Column(name = "idSupplier")
+    private Long idSupplier;
+
+    @JsonProperty("quantity")
+    @Column(name = "quantity")
+    private Double quantity;
+
+    public ProductDB(  String dbStructure[])
+    {
+        this.setId(Long.parseLong(dbStructure[0]));
+        this.setCode1(Long.parseLong(dbStructure[1]));
+        this.setCode2(Long.parseLong(dbStructure[2]));
+        this.setDescription(dbStructure[3]);
+        this.setUnit(dbStructure[4]);
+        this.setIdSupplier(Long.parseLong(dbStructure[5]));
+        this.setQuantity(Double.parseDouble(dbStructure[6]));
+
+    }
+
+    public ProductDB(String json) throws Exception
+    {
+        ProductDB productDB = jsonMapper.readValue(json, ProductDB.class);
+        this.setId(productDB.getId());
+        this.setCode1(productDB.getCode1());
+        this.setCode2(productDB.getCode2());
+        this.setDescription(productDB.getDescription());
+        this.setUnit(productDB.getUnit());
+        this.setIdSupplier(productDB.getIdSupplier());
+        this.setQuantity(productDB.getQuantity());
+    }
+
+
+    @Override
+    public String toString() {
+        StringWriter sw = new StringWriter();
+        try {
+            new ObjectMapper().writeValue(sw, this);
+            return sw.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getCode1() {
+        return code1;
+    }
+
+    public void setCode1(Long code1) {
+        this.code1 = code1;
+    }
+
+    public Long getCode2() {
+        return code2;
+    }
+
+    public void setCode2(Long code2) {
+        this.code2 = code2;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Long getIdSupplier() {
+        return idSupplier;
+    }
+
+    public void setIdSupplier(Long idSupplier) {
+        this.idSupplier = idSupplier;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+}

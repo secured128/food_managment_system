@@ -12,14 +12,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 
-@JsonPropertyOrder({"id", "name"})
+//@JsonPropertyOrder({"id", "name", "address","city", })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "suppliers", indexes = {@Index(name = "Supplier_unique_idx", columnList = "name", unique = true)})
 public class SupplierDB implements Serializable
 {
-
-    private static final long serialVersionUID = -3009157732242241505L;
 
     @JsonIgnore
     @Transient
@@ -27,7 +25,7 @@ public class SupplierDB implements Serializable
 
     @JsonProperty("id")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @JsonProperty("name")
@@ -59,13 +57,9 @@ public class SupplierDB implements Serializable
     private String companyNo;
 
 
-    protected SupplierDB()
-    {
-    }
-
     public SupplierDB(  String dbStructure[])
     {
-        //this.setId( Long.parseLong(id));
+        this.setId( Long.parseLong(dbStructure[0]));
         this.setName(dbStructure[1]);
         this.setAddress(dbStructure[2]);
         this.setCity(dbStructure[3]);
