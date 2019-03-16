@@ -125,7 +125,7 @@ ALTER TABLE public.instructions_description
     CREATE TABLE public.recipe_products
     (
       id bigint NOT NULL,
-      recipe_desc_id  character varying(255) NOT NULL REFERENCES recipe_description(recipe_name),
+      recipe_desc_name  character varying(255) NOT NULL REFERENCES recipe_description(recipe_name),
       product_id bigint NOT NULL REFERENCES product(id),
       quantity numeric NOT NULL,
       CONSTRAINT recipe_products_pkey PRIMARY KEY (id)
