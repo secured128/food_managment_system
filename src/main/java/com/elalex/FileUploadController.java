@@ -1,49 +1,182 @@
 package com.elalex;
-import com.elalex.food.model.FileModel;
+
+import com.elalex.food.model.*;
+import com.elalex.utils.CreatePdfFile;
+import com.elalex.utils.Excel2String;
+import com.elalex.utils.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-@Controller
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+/*
+This file is responsible to upload excel with all reference tables:
+units
+supplier
+product
+recipe_description
+instructions_description
+recipe_instructions_order
+recipe_products
+1) delete all data fro tables above
+2) upload data from excel
+ */
+@RestController
 public class FileUploadController {
-
     @Autowired
-    ServletContext context;
+    private UnitsDBRepository unitsDBRepository;
+    private SupplierDBRepository supplierDBRepository;
+    private ProductDBRepository productDBRepository;
+    private RecipeDescriptionDBRepository recipeDescriptionDBRepository;
+    private InstructionsDescriptionDBRepository instructionsDescriptionDBRepository;
+    private RecipeInstructionsOrderDBRepository recipeInstructionsOrderDBRepository;
+    private RecipeProductsDBRepository recipeProductsDBRepository;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/fileUploadPage")
-    public ModelAndView fileUploadPage() {
-        System.out.println("in file upload");
-        FileModel file = new FileModel();
-        ModelAndView modelAndView = new ModelAndView("fileUpload", "command", file);
+@RequestMapping(method = GET, path = "/uploadGeneralFile")
 
-        return modelAndView;
+    public ResponseEntity uploadExcelFileToDB(HttpServletResponse response, String url ) {
+        try {
+            GeneralUtils.addHeader(response);
+            System.out.println("url "+url);
+
+            deleteAllTables();
+
+            for(ExcelSheetsOrder excelSheetsOrder: ExcelSheetsOrder.values())
+            {
+                int sheetNumber = excelSheetsOrder.ordinal();
+                int numOfParams = setNumOfParams(excelSheetsOrder);
+
+                Excel2String excel2Csv = new Excel2String();
+
+                List<String[]> sheetValues = excel2Csv.convert2String( url, numOfParams, sheetNumber );
+                uploadToDB(sheetValues, excelSheetsOrder );
+
+            }
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
-    @RequestMapping(value="/fileUploadPage", method = RequestMethod.POST)
-    public String fileUpload(@Validated FileModel file, BindingResult result, ModelMap model) throws IOException {
-        if (result.hasErrors()) {
-            System.out.println("validation errors");
-            return "fileUploadPage";
-        } else {
-            System.out.println("Fetching file");
-            MultipartFile multipartFile = file.getFile();
-            String uploadPath = context.getRealPath("") + File.separator + "temp" + File.separator;
-            //Now do something with file...
-            FileCopyUtils.copy(file.getFile().getBytes(), new File(uploadPath+file.getFile().getOriginalFilename()));
-            String fileName = multipartFile.getOriginalFilename();
-            model.addAttribute("fileName", fileName);
-            return "success";
+    private void deleteAllTables()
+    {
+        recipeProductsDBRepository.deleteAll();
+        recipeInstructionsOrderDBRepository.deleteAll();
+        instructionsDescriptionDBRepository.deleteAll();
+        recipeDescriptionDBRepository.deleteAll();
+        productDBRepository.deleteAll();
+        supplierDBRepository.deleteAll();
+        unitsDBRepository.deleteAll();
+    }
+
+    private int  setNumOfParams(ExcelSheetsOrder excelSheetsOrder)
+    {
+        int numOfParams = 0;
+        switch (excelSheetsOrder)
+        {
+            case UNITS:
+                numOfParams = UnitsDB.NUMBER_OF_PARAMS;
+                break;
+            case SUPPLIERS:
+                numOfParams = SupplierDB.NUMBER_OF_PARAMS;
+                break;
+            case PRODUCT:
+                numOfParams = ProductDB.NUMBER_OF_PARAMS;
+                break;
+            case RECIPE_DESCRIPTION:
+                numOfParams = RecipeDescriptionDB.NUMBER_OF_PARAMS;
+                break;
+            case INSTRUCTIONS_DESCRIPTION:
+                numOfParams = InstructionsDescriptionDB.NUMBER_OF_PARAMS;
+                break;
+            case RECIPE_INSTRUCTIONS_ORDER:
+                numOfParams = RecipeInstructionsOrderDB.NUMBER_OF_PARAMS;
+                break;
+            case RECIPE_PRODUCTS:
+                numOfParams = RecipeProductsDB.NUMBER_OF_PARAMS;
+                break;
+            default:
+                break;
+        }
+        return numOfParams;
+    }
+
+    private void  uploadToDB( List<String[]> sheetValues, ExcelSheetsOrder excelSheetsOrder)
+    {
+        Iterator<String[]> iterator = sheetValues.iterator();
+        switch (excelSheetsOrder)
+        {
+            case UNITS:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    UnitsDB nextRowDB = new UnitsDB(nextRow);
+                    unitsDBRepository.save(nextRowDB);
+                }
+                break;
+            case SUPPLIERS:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    SupplierDB nextRowDB = new SupplierDB(nextRow);
+                    supplierDBRepository.save(nextRowDB);
+                }
+                break;
+            case PRODUCT:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    ProductDB nextRowDB = new ProductDB(nextRow);
+                    productDBRepository.save(nextRowDB);
+                }
+                break;
+            case RECIPE_DESCRIPTION:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    RecipeDescriptionDB nextRowDB = new RecipeDescriptionDB(nextRow);
+                    recipeDescriptionDBRepository.save(nextRowDB);
+                }
+                break;
+            case INSTRUCTIONS_DESCRIPTION:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    InstructionsDescriptionDB nextRowDB = new InstructionsDescriptionDB(nextRow);
+                    instructionsDescriptionDBRepository.save(nextRowDB);
+                }
+                break;
+            case RECIPE_INSTRUCTIONS_ORDER:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    RecipeInstructionsOrderDB nextRowDB = new RecipeInstructionsOrderDB(nextRow);
+                    recipeInstructionsOrderDBRepository.save(nextRowDB);
+                }
+                break;
+            case RECIPE_PRODUCTS:
+            {
+                String[] nextRow = iterator.next();
+                RecipeProductsDB nextRowDB = new RecipeProductsDB(nextRow);
+                recipeProductsDBRepository.save(nextRowDB);
+            }
+                break;
+            default:
+                break;
         }
     }
+
+    public enum ExcelSheetsOrder{
+        UNITS, SUPPLIERS, PRODUCT, RECIPE_DESCRIPTION,
+        INSTRUCTIONS_DESCRIPTION, RECIPE_INSTRUCTIONS_ORDER, RECIPE_PRODUCTS    }
 }

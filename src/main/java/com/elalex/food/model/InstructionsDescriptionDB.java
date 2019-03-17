@@ -18,6 +18,7 @@ import java.io.StringWriter;
 @Table(name = "instructions_description")
 public class InstructionsDescriptionDB implements Serializable
 {
+    static public final  int NUMBER_OF_PARAMS=2;// it's 2 and not 3, since image is not uploaded from excel
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();

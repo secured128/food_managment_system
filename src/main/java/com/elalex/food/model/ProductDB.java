@@ -20,6 +20,7 @@ import java.io.StringWriter;
 @Table(name = "product")
 public class ProductDB implements Serializable
 {
+    static public final  int NUMBER_OF_PARAMS=7;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();

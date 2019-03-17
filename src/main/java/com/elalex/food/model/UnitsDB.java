@@ -22,6 +22,8 @@ import java.io.StringWriter;
 @Table(name = "units")
 public class UnitsDB implements Serializable
 {
+
+    static public final  int NUMBER_OF_PARAMS=1;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
@@ -29,6 +31,7 @@ public class UnitsDB implements Serializable
     @JsonProperty("units")
     @Id
     private String units;
+
 
     public UnitsDB(  String dbStructure[])
     {

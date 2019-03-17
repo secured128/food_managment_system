@@ -14,7 +14,7 @@ import java.util.List;
 public class  Excel2String {
 
 
-    public  List<String[]> convert2String(String url, int sizeOfParams) throws Exception{
+    public  List<String[]> convert2String(String url, int sizeOfParams, int sheetNumber) throws Exception{
 
         //First we read the Excel file in binary format into FileInputStream
         //FileInputStream input_document = new FileInputStream(new File("excel_to_csv.xls"));
@@ -25,7 +25,7 @@ public class  Excel2String {
         XSSFWorkbook my_xls_workbook = new XSSFWorkbook(input_document);
         System.out.println("inside HSSFWorkbook");
         // Read worksheet into HSSFSheet
-        XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(0);
+        XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(sheetNumber);
         List<String[]> returnedList = new ArrayList<String[]>();
         // To iterate over the rows
         Iterator<Row> rowIterator = my_worksheet.iterator();
@@ -49,7 +49,7 @@ public class  Excel2String {
                         csvdata[i]= cell.getStringCellValue();
                         break;
                     case NUMERIC:
-                        long a =(long)cell.getNumericCellValue();
+                        double a =(double)cell.getNumericCellValue();
                         csvdata[i] = String.valueOf(a);
                         break;
                     case BLANK:

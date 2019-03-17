@@ -19,6 +19,7 @@ import java.io.StringWriter;
 @Table(name = "recipe_description")
 public class RecipeDescriptionDB implements Serializable
 {
+    static public final  int NUMBER_OF_PARAMS=4;//we put 4 and npt 5, since image is not uploaded from excel
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();

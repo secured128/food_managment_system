@@ -18,6 +18,7 @@ import java.io.StringWriter;
 @Table(name = "recipe_instructions_order")
 public class RecipeProductsDB implements Serializable
 {
+    static public final  int NUMBER_OF_PARAMS=4;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();

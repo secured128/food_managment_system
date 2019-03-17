@@ -13,12 +13,13 @@ import java.io.Serializable;
 import java.io.StringWriter;
 
 //@JsonPropertyOrder({"id", "name", "address","city", })
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "suppliers", indexes = {@Index(name = "Supplier_unique_idx", columnList = "name", unique = true)})
 public class SupplierDB implements Serializable
 {
-
+   static public final  int NUMBER_OF_PARAMS=8;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();

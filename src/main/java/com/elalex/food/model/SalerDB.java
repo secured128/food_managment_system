@@ -19,7 +19,7 @@ import java.io.StringWriter;
 public class SalerDB implements Serializable
 {
 
-    private static final long serialVersionUID = -3009157732242241501L;
+    static public final  int NUMBER_OF_PARAMS=5;
 
     @JsonIgnore
     @Transient
