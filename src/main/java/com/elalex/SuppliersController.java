@@ -5,11 +5,14 @@ import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
 import com.elalex.food.model.SupplierDB;
 import com.elalex.food.model.SupplierDBRepository;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -71,8 +74,10 @@ public class SuppliersController {
             int sizeOfParams=8;
             List<SupplierDB> suppliersList = new ArrayList<>();
             System.out.println(url);
+            InputStream input_document = new URL(url).openStream();
+            XSSFWorkbook my_xls_workbook = new XSSFWorkbook(input_document);
             Excel2String excel2Csv = new Excel2String();
-            List<String[]> suppDb = excel2Csv.convert2String( url, sizeOfParams);
+            List<String[]> suppDb = excel2Csv.convert2String( my_xls_workbook, sizeOfParams, 0);
             Iterator <String[]> iterator = suppDb.iterator();
 
             while (iterator.hasNext()) {
@@ -81,6 +86,7 @@ public class SuppliersController {
                 nextSupplDb = supplierDBRepository.save(nextSupplDb);
                 suppliersList.add(nextSupplDb);
             }
+            input_document.close();
             CreatePdfFile.createPdfFile();
             return ResponseEntity.ok(suppliersList);
         }

@@ -36,6 +36,9 @@ public class InstructionsDescriptionDB implements Serializable
     private byte[] image;
 
 
+    public InstructionsDescriptionDB()
+    {
+    }
 
     public InstructionsDescriptionDB(  String dbStructure[])
     {

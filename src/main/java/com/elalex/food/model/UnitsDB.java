@@ -28,20 +28,22 @@ public class UnitsDB implements Serializable
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
 
-    @JsonProperty("units")
+    @JsonProperty("unit_name")
     @Id
-    private String units;
+    private String unitName;
 
+    protected UnitsDB() {
+    }
 
     public UnitsDB(  String dbStructure[])
     {
-        this.setUnits(dbStructure[0]);
+        this.setUnitName(dbStructure[0]);
     }
 
     public UnitsDB(String json) throws Exception
     {
         UnitsDB unitsDB = jsonMapper.readValue(json, UnitsDB.class);
-        this.setUnits(unitsDB.getUnits());
+        this.setUnitName(unitsDB.getUnitName());
     }
 
 
@@ -57,11 +59,12 @@ public class UnitsDB implements Serializable
         }
     }
 
-    public String getUnits() {
-        return units;
+
+    public String getUnitName() {
+        return unitName;
     }
 
-    public void setUnits(String units) {
-        this.units = units;
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

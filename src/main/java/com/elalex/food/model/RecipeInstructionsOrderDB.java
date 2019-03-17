@@ -51,14 +51,21 @@ public class RecipeInstructionsOrderDB implements Serializable
     @Column(name = "instruction_order")
     private Integer instructionOrder;
 
+    public RecipeInstructionsOrderDB()
+    {
+
+    }
     public RecipeInstructionsOrderDB(  String dbStructure[])
     {
-        this.setId(Long.parseLong(dbStructure[0]));
+        this.setId((long) Double.parseDouble(dbStructure[0]));
         this.setRecipeDescriptionName(dbStructure[1]);
         this.setInstructionName(dbStructure[2]);
-        this.setLinkedRecipeDescName(dbStructure[3]);
-        this.setQuantityOfLinkedRecipe(Double.parseDouble(dbStructure[4]));
-        this.setInstructionOrder(Integer.getInteger(dbStructure[5]));
+         if (!(dbStructure[3]==null))
+           this.setLinkedRecipeDescName(dbStructure[3]);
+        if (!(dbStructure[4]==null))
+            this.setQuantityOfLinkedRecipe(Double.parseDouble(dbStructure[4]));
+        if (!(dbStructure[5]==null))
+        this.setInstructionOrder( (int)Double.parseDouble(dbStructure[5]));
     }
 
     public RecipeInstructionsOrderDB(String json) throws Exception

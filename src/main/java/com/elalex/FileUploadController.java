@@ -1,17 +1,18 @@
 package com.elalex;
 
 import com.elalex.food.model.*;
-import com.elalex.utils.CreatePdfFile;
 import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,11 +34,17 @@ recipe_products
 public class FileUploadController {
     @Autowired
     private UnitsDBRepository unitsDBRepository;
+    @Autowired
     private SupplierDBRepository supplierDBRepository;
+    @Autowired
     private ProductDBRepository productDBRepository;
+    @Autowired
     private RecipeDescriptionDBRepository recipeDescriptionDBRepository;
+    @Autowired
     private InstructionsDescriptionDBRepository instructionsDescriptionDBRepository;
+    @Autowired
     private RecipeInstructionsOrderDBRepository recipeInstructionsOrderDBRepository;
+    @Autowired
     private RecipeProductsDBRepository recipeProductsDBRepository;
 
 @RequestMapping(method = GET, path = "/uploadGeneralFile")
@@ -49,6 +56,13 @@ public class FileUploadController {
 
             deleteAllTables();
 
+            //First we read the Excel file in binary format into FileInputStream
+            //FileInputStream input_document = new FileInputStream(new File("excel_to_csv.xls"));
+            InputStream input_document = new URL(url).openStream();
+
+            // Read workbook into HSSFWorkbook
+            //ZipSecureFile.setMinInflateRatio(-1.0d);
+            XSSFWorkbook my_xls_workbook = new XSSFWorkbook(input_document);
             for(ExcelSheetsOrder excelSheetsOrder: ExcelSheetsOrder.values())
             {
                 int sheetNumber = excelSheetsOrder.ordinal();
@@ -56,10 +70,11 @@ public class FileUploadController {
 
                 Excel2String excel2Csv = new Excel2String();
 
-                List<String[]> sheetValues = excel2Csv.convert2String( url, numOfParams, sheetNumber );
+                List<String[]> sheetValues = excel2Csv.convert2String( my_xls_workbook, numOfParams, sheetNumber );
                 uploadToDB(sheetValues, excelSheetsOrder );
 
             }
+            input_document.close(); //close xls
             return ResponseEntity.ok().build();
         }
         catch (Exception e) {
@@ -70,6 +85,7 @@ public class FileUploadController {
 
     private void deleteAllTables()
     {
+        System.out.println ("deleting tables");
         recipeProductsDBRepository.deleteAll();
         recipeInstructionsOrderDBRepository.deleteAll();
         instructionsDescriptionDBRepository.deleteAll();
@@ -165,11 +181,12 @@ public class FileUploadController {
                 }
                 break;
             case RECIPE_PRODUCTS:
-            {
-                String[] nextRow = iterator.next();
-                RecipeProductsDB nextRowDB = new RecipeProductsDB(nextRow);
-                recipeProductsDBRepository.save(nextRowDB);
-            }
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    RecipeProductsDB nextRowDB = new RecipeProductsDB(nextRow);
+                    recipeProductsDBRepository.save(nextRowDB);
+                }
                 break;
             default:
                 break;

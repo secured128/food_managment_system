@@ -136,3 +136,11 @@ ALTER TABLE public.instructions_description
     ALTER TABLE public.recipe_products
       OWNER TO food_manager;
 
+
+drop table recipe_products;
+drop table recipe_instructions_order;
+drop table instructions_description;
+drop table recipe_description;
+drop table product;
+drop table units;
+drop table suppliers;

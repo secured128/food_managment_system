@@ -15,7 +15,7 @@ import java.io.StringWriter;
 //@JsonPropertyOrder({"id"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "recipe_instructions_order")
+@Table(name = "recipe_products")
 public class RecipeProductsDB implements Serializable
 {
     static public final  int NUMBER_OF_PARAMS=4;
@@ -40,12 +40,15 @@ public class RecipeProductsDB implements Serializable
     private Double quantity;
 
 
+    public RecipeProductsDB()
+    {
 
+    }
     public RecipeProductsDB(  String dbStructure[])
     {
-        this.setId(Long.parseLong(dbStructure[0]));
+        this.setId((long) Double.parseDouble(dbStructure[0]));
         this.setRecipeDescName(dbStructure[1]);
-        this.setProductId(Long.parseLong(dbStructure[2]));
+        this.setProductId((long) Double.parseDouble(dbStructure[2]));
         this.setQuantity(Double.parseDouble(dbStructure[3]));
     }
 

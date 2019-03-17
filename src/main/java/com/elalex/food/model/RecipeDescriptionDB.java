@@ -45,6 +45,10 @@ public class RecipeDescriptionDB implements Serializable
     private String unit;
 
 
+    public RecipeDescriptionDB()
+    {
+    }
+
     public RecipeDescriptionDB(  String dbStructure[])
     {
         this.setRecipeName(dbStructure[0]);

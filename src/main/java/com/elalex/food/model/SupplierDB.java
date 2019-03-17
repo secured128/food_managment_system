@@ -58,9 +58,13 @@ public class SupplierDB implements Serializable
     private String companyNo;
 
 
+    public SupplierDB()
+    {
+
+    }
     public SupplierDB(  String dbStructure[])
     {
-        this.setId( Long.parseLong(dbStructure[0]));
+        this.setId((long) Double.parseDouble(dbStructure[0]));
         this.setName(dbStructure[1]);
         this.setAddress(dbStructure[2]);
         this.setCity(dbStructure[3]);
