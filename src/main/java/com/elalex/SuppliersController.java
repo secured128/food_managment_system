@@ -87,7 +87,7 @@ public class SuppliersController {
                 suppliersList.add(nextSupplDb);
             }
             input_document.close();
-            CreatePdfFile.createPdfFile();
+           // CreatePdfFile.createPdfFile();
             return ResponseEntity.ok(suppliersList);
         }
         catch (Exception e) {

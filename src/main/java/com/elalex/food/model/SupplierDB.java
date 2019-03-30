@@ -4,7 +4,6 @@ package com.elalex.food.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ import java.io.StringWriter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "suppliers", indexes = {@Index(name = "Supplier_unique_idx", columnList = "name", unique = true)})
+@Table(name = "suppliers")
 public class SupplierDB implements Serializable
 {
    static public final  int NUMBER_OF_PARAMS=8;

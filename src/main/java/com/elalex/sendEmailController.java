@@ -15,7 +15,7 @@ import java.util.Properties;
 public class sendEmailController
 {
 
-    public static void sendEmail()
+    public static void sendEmail( String fileName)
     {
     String from = "parisbakeryisr@gmail.com";
     String to = "secured128@gmail.com";
@@ -23,7 +23,7 @@ public class sendEmailController
     String bodyText = "This is a important message with attachment.";
 
     // The attachment file name.
-    String attachmentName = "pdfBoxHelloWorld.pdf";
+    String attachmentName = fileName;
 
     // Creates a Session with the following properties.
     Properties props = new Properties();
@@ -32,6 +32,7 @@ public class sendEmailController
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.port", "587");
     Session session = Session.getDefaultInstance(props);
+        session.getProperties().put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
         try {
         InternetAddress fromAddress = new InternetAddress(from);

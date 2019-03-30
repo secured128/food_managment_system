@@ -41,6 +41,8 @@ dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.1'
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.14'
+    compile group: 'com.ibm.icu', name: 'icu4j', version: '63.1'
+    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
     testCompile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'

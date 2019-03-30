@@ -15,7 +15,7 @@ import java.io.StringWriter;
 @JsonPropertyOrder({"id", "name", "password"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "users", indexes = {@Index(name = "user_unique_idx", columnList = "name", unique = true)})
+@Table(name = "users")
 public class User implements Serializable {
 
     private static final long serialVersionUID = -3009157732242241606L;

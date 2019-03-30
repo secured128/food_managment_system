@@ -66,8 +66,8 @@ public class myExe {
 
 
         System.out.print("groupCounter" + groupCounter);
-        CreatePdfFile.createPdfFile();
-        sendEmailController.sendEmail();
+     //   CreatePdfFile.createPdfFile();
+       // sendEmailController.sendEmail();
     }
 
 }
