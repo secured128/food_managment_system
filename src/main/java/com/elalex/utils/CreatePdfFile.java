@@ -1,28 +1,25 @@
 package com.elalex.utils;
 
+import com.elalex.food.model.ProductsPlacement;
 import com.elalex.food.model.SelectRecipeInstructionsDB;
 import com.elalex.food.model.SelectRecipeQueryDB;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.text.PDFTextStripper;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 public class CreatePdfFile {
-    public static String createPdfFile(List<SelectRecipeQueryDB> selectRecipeQueryDBList, List <SelectRecipeInstructionsDB> selectRecipeInstructionsDBList, String recipeName) throws IOException {
+    public static String createPdfFile(List<SelectRecipeQueryDB> selectRecipeQueryDBList, List <SelectRecipeInstructionsDB> selectRecipeInstructionsDBList,
+                                       String recipeName, HashMap<Long,SelectRecipeQueryDB> productHashMap,
+                                       HashMap<Long, ProductsPlacement> productsPlacementHashMap) throws IOException {
         System.out.println("Inside createPdfFile");
         Document document = new Document();
         String fileName = "recipe"+GeneralUtils.getDateTime()+".pdf";
@@ -40,7 +37,18 @@ public class CreatePdfFile {
             PdfPCell cell = new PdfPCell(phrase);
             addCellToPdf ( table,  cell,  phrase);
             addProductsToPdf ( table, cell,  phrase,  font,  bf,  selectRecipeQueryDBList);
-            addInstructionsToPdf( table,  cell,  phrase,  font,  bf,  selectRecipeInstructionsDBList);
+            productHashMap.entrySet().removeIf(productMap->
+                (productMap.getValue().getCalculatedQuantity().equals(0d)));
+
+            if (productHashMap.isEmpty())
+            {
+                addInstructionsToPdf( table,  cell,  phrase,  font,  bf,  selectRecipeInstructionsDBList) ;
+                addProductsPlacement( table,  cell,  phrase,  font,  bf, productsPlacementHashMap);
+            }
+            else
+            {
+                addMissingProductsToPdf(table,  cell,  phrase,  font,  bf, productHashMap);
+            }
           /*  font = new Font(bf, 15);
             phrase = new Phrase(
                     "חומרים", font);
@@ -71,6 +79,7 @@ public class CreatePdfFile {
         {
             e.printStackTrace();
         }
+
         return fileName;
 
 
@@ -84,7 +93,8 @@ public class CreatePdfFile {
         table.addCell(cell);
     }
 
-    public static void addProductsToPdf (PdfPTable table, PdfPCell cell, Phrase phrase, Font font, BaseFont bf, List<SelectRecipeQueryDB> selectRecipeQueryDBList) throws IOException
+    public static void addProductsToPdf (PdfPTable table, PdfPCell cell, Phrase phrase, Font font, BaseFont bf,
+                                         List<SelectRecipeQueryDB> selectRecipeQueryDBList) throws IOException
     {
         font = new Font(bf, 15);
         phrase = new Phrase(
@@ -97,7 +107,7 @@ public class CreatePdfFile {
             SelectRecipeQueryDB selectRecipeQueryDBLine= selectRecipeQueryDBIterator.next();
 
             phrase = new Phrase(
-                    GeneralUtils.padRight(selectRecipeQueryDBLine.getRecipeDescriptionName(),25)+" :  "
+                    GeneralUtils.padRight(selectRecipeQueryDBLine.getProductDescriptionName(),25)+" :  "
                             +GeneralUtils.padRight(Double.toString(selectRecipeQueryDBLine.getCalculatedQuantity()),10) +"  "+selectRecipeQueryDBLine.getUnit(), font);
             addCellToPdf ( table,  cell,  phrase);
         }
@@ -121,6 +131,46 @@ public class CreatePdfFile {
                             +GeneralUtils.padRight(selectRecipeInstructionsDBLine.getInstructionDescription(),20), font);
             addCellToPdf ( table,  cell,  phrase);
         }
+        phrase = new Phrase("", font);
+        addCellToPdf ( table,  cell,  phrase);
+    }
+
+    public static void addProductsPlacement (PdfPTable table, PdfPCell cell, Phrase phrase, Font font, BaseFont bf,
+                                             HashMap<Long, ProductsPlacement> productsPlacementHashMap) throws IOException
+    {
+        font = new Font(bf, 15);
+        phrase = new Phrase("מיקום החומרים", font);
+        addCellToPdf ( table,  cell,  phrase);
+        font = new Font(bf, 10);
+        for (ProductsPlacement value: productsPlacementHashMap.values())
+        {
+            phrase = new Phrase(
+                    GeneralUtils.padRight(value.getProductDescriptionName(),5)+"   "
+                            +GeneralUtils.padRight(Double.toString(value.getQuantity()),20)+" "
+                            + GeneralUtils.padRight(value.getUnit(),5)
+                    + GeneralUtils.padRight(value.getPlacement(),5), font);
+            addCellToPdf ( table,  cell,  phrase);
+        }
+
+        phrase = new Phrase("", font);
+        addCellToPdf ( table,  cell,  phrase);
+    }
+
+    public static void addMissingProductsToPdf (PdfPTable table, PdfPCell cell, Phrase phrase, Font font, BaseFont bf, HashMap<Long,SelectRecipeQueryDB> productHashMap) throws IOException
+    {
+        font = new Font(bf, 15);
+        phrase = new Phrase("חומרים חסרים למתכון", font);
+        addCellToPdf ( table,  cell,  phrase);
+        font = new Font(bf, 10);
+        for (SelectRecipeQueryDB value: productHashMap.values())
+        {
+            phrase = new Phrase(
+                    GeneralUtils.padRight(value.getProductDescriptionName(),5)+"   "
+                            +GeneralUtils.padRight(Double.toString(value.getCalculatedQuantity()),20)+" "
+                   + GeneralUtils.padRight(value.getUnit(),5), font);
+            addCellToPdf ( table,  cell,  phrase);
+        }
+
         phrase = new Phrase("", font);
         addCellToPdf ( table,  cell,  phrase);
     }

@@ -53,12 +53,15 @@ public class SelectRecipeQueryDB implements Serializable
     private String unit;
 */
 
-
-
-    @JsonProperty("recipeDescriptionName")
+    @JsonProperty("productId")
     @Id
+    @Column(name = "product_id")
+    private Long productId;
+
+
+    @JsonProperty("productDescriptionName")
     @Column(name = "description")
-    private String recipeDescriptionName;
+    private String productDescriptionName;
 
 
     @JsonProperty("calculatedQuantity")
@@ -73,11 +76,19 @@ public class SelectRecipeQueryDB implements Serializable
     {
 
     }
+    public SelectRecipeQueryDB(SelectRecipeQueryDB selectRecipeQueryDB)
+    {
+       this.productId = selectRecipeQueryDB.getProductId();
+       this.productDescriptionName = selectRecipeQueryDB.getProductDescriptionName();
+       this.calculatedQuantity = selectRecipeQueryDB.getCalculatedQuantity();
+       this.unit = selectRecipeQueryDB.getUnit();
+    }
 
     public SelectRecipeQueryDB(String json) throws Exception
     {
         SelectRecipeQueryDB selectRecipeQueryDB = jsonMapper.readValue(json, SelectRecipeQueryDB.class);
-        this.setRecipeDescriptionName(selectRecipeQueryDB.getRecipeDescriptionName());
+        this.setProductId(selectRecipeQueryDB.getProductId());
+        this.setProductDescriptionName(selectRecipeQueryDB.getProductDescriptionName());
       //  this.setLinkedRecipeDescName(selectRecipeQueryDB.getLinkedRecipeDescName());
         this.setCalculatedQuantity(selectRecipeQueryDB.getCalculatedQuantity());
         this.setUnit(selectRecipeQueryDB.getUnit());
@@ -98,12 +109,12 @@ public class SelectRecipeQueryDB implements Serializable
 
 
 
-    public String getRecipeDescriptionName() {
-        return recipeDescriptionName;
+    public String getProductDescriptionName() {
+        return productDescriptionName;
     }
 
-    public void setRecipeDescriptionName(String recipeDescriptionName) {
-        this.recipeDescriptionName = recipeDescriptionName;
+    public void setProductDescriptionName(String productDescriptionName) {
+        this.productDescriptionName = productDescriptionName;
     }
 
 
@@ -121,5 +132,13 @@ public class SelectRecipeQueryDB implements Serializable
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

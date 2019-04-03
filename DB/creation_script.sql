@@ -136,6 +136,48 @@ ALTER TABLE public.instructions_description
     ALTER TABLE public.recipe_products
       OWNER TO food_manager;
 
+  CREATE TABLE public.stock
+    (
+      id bigint NOT NULL,
+      product_id bigint NOT NULL REFERENCES product(id),
+      quantity numeric NOT NULL,
+      price numeric NOT NULL,
+      creation_date date not null,
+      expiration_date date not null,
+      placement character varying(255) NOT NULL,
+      used_quantity numeric  NOT NULL,
+      CONSTRAINT stock_pkey PRIMARY KEY (id)
+
+    )
+    WITH (
+      OIDS=FALSE
+    );
+    ALTER TABLE public.stock
+      OWNER TO food_manager;
+
+
+
+     CREATE TABLE public.transaction_log
+    (
+      transaction_id bigint NOT NULL,
+      user_id character varying(255) NOT NULL,
+      user_email character varying(255) NOT NULL,
+      transaction_type character varying(255) NOT NULL,
+      creation_date date not null,
+      recipe_desc_name  character varying(255) NOT NULL REFERENCES recipe_description(recipe_name),
+      recipe_quantity  numeric NOT NULL,
+      stock_id bigint NOT NULL REFERENCES stock(id),
+      used_quantity numeric NOT NULL,
+      CONSTRAINT transaction_log_pkey PRIMARY KEY (transaction_id)
+
+    )
+    WITH (
+      OIDS=FALSE
+    );
+    ALTER TABLE public.transaction_log
+      OWNER TO food_manager;
+
+
 
 drop table recipe_products;
 drop table recipe_instructions_order;
@@ -144,3 +186,6 @@ drop table recipe_description;
 drop table product;
 drop table units;
 drop table suppliers;
+
+drop table stock;
+drop table transaction_log;

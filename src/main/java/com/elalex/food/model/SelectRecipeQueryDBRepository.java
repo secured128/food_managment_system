@@ -86,11 +86,13 @@ public interface SelectRecipeQueryDBRepository extends CrudRepository<SelectReci
                     "            LEVEL +1 AS LEVEL\n" +
                     "     FROM recipe_join AS child\n" +
                     "     JOIN cte AS parent ON child.recipe_description_name = parent.linked_recipe_desc_name)\n" +
-                    "SELECT description,\n" +
+                    "SELECT  product_id,\n" +
+                    "        description,\n" +
                     "       sum(calculated_quantity) *orig_factor calculated_quantity,\n" +
                     "       unit\n" +
                     "FROM input_recipe_factor,\n" +
-                    "  (SELECT description,\n" +
+                    "  (SELECT  product_id,\n" +
+                    "           description,\n" +
                     "          factor*quantity calculated_quantity,\n" +
                     "          unit\n" +
                     "   FROM cte,\n" +
@@ -98,14 +100,16 @@ public interface SelectRecipeQueryDBRepository extends CrudRepository<SelectReci
                     "        product\n" +
                     "   WHERE recipe_products.recipe_desc_name = linked_recipe_desc_name\n" +
                     "     AND recipe_products.product_id = product.id\n" +
-                    "   UNION ALL SELECT description,\n" +
+                    "   UNION ALL SELECT product_id,\n" +
+                    "                    description,\n" +
                     "                    quantity calculated_quantity,\n" +
                     "                    unit\n" +
-                    "   FROM recipe_products,\n" +
+                    "   FROM  recipe_products,\n" +
                     "        product\n" +
                     "   WHERE recipe_products.recipe_desc_name = ?1\n" +
                     "     AND recipe_products.product_id = product.id ) prd\n" +
-                    "GROUP BY description,\n" +
+                    "GROUP BY  product_id,\n" +
+                    "          description,\n" +
                     "         unit, orig_factor\n" +
                     "ORDER BY description", nativeQuery = true)
 
