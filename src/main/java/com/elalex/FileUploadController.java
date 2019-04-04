@@ -4,6 +4,7 @@ import com.elalex.food.model.*;
 import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,9 +71,15 @@ public class FileUploadController {
                 int numOfParams = setNumOfParams(excelSheetsOrder);
 
                 Excel2String excel2Csv = new Excel2String();
+                XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(sheetNumber);
 
-                List<String[]> sheetValues = excel2Csv.convert2String( my_xls_workbook, numOfParams, sheetNumber );
-                uploadToDB(sheetValues, excelSheetsOrder );
+                List<String[]> sheetValues = excel2Csv.convert2String(numOfParams, my_worksheet );
+                int imageColumn = setImageColumn(excelSheetsOrder);
+                HashMap<String, byte[]> picturesMap = null;
+                if (imageColumn>0) {
+                    picturesMap = excel2Csv.readImages(my_worksheet, imageColumn);
+                }
+                uploadToDB(sheetValues, picturesMap, excelSheetsOrder );
 
             }
             input_document.close(); //close xls
@@ -127,7 +135,21 @@ public class FileUploadController {
         return numOfParams;
     }
 
-    private void  uploadToDB( List<String[]> sheetValues, ExcelSheetsOrder excelSheetsOrder)
+    private int  setImageColumn(ExcelSheetsOrder excelSheetsOrder)
+    {
+        int imageColumn = 0;
+        switch (excelSheetsOrder)
+        {
+            case RECIPE_DESCRIPTION:
+                imageColumn = RecipeDescriptionDB.IMAGE_COLUMN;
+                break;
+            default:
+                break;
+        }
+        return imageColumn;
+    }
+
+    private void  uploadToDB( List<String[]> sheetValues, HashMap<String, byte[]> picturesMap, ExcelSheetsOrder excelSheetsOrder)
     {
         Iterator<String[]> iterator = sheetValues.iterator();
         switch (excelSheetsOrder)
@@ -160,7 +182,7 @@ public class FileUploadController {
                 while (iterator.hasNext())
                 {
                     String[] nextRow = iterator.next();
-                    RecipeDescriptionDB nextRowDB = new RecipeDescriptionDB(nextRow);
+                    RecipeDescriptionDB nextRowDB = new RecipeDescriptionDB(nextRow, picturesMap);
                     recipeDescriptionDBRepository.save(nextRowDB);
                 }
                 break;

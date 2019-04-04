@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.HashMap;
 
 
 //@JsonPropertyOrder({"id"})
@@ -20,6 +21,7 @@ import java.io.StringWriter;
 public class RecipeDescriptionDB implements Serializable
 {
     static public final  int NUMBER_OF_PARAMS=4;//we put 4 and npt 5, since image is not uploaded from excel
+    static public final  int IMAGE_COLUMN=4;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
@@ -44,18 +46,19 @@ public class RecipeDescriptionDB implements Serializable
     @Column(name = "unit")
     private String unit;
 
-
     public RecipeDescriptionDB()
     {
     }
 
-    public RecipeDescriptionDB(  String dbStructure[])
+    public RecipeDescriptionDB(  String dbStructure[], HashMap<String, byte[]> picturesMap)
     {
         this.setRecipeName(dbStructure[0]);
         this.setDescription(dbStructure[1]);
 //        this.setImage(Long.parseLong(dbStructure[2]));
         this.setSizeOfRecipe(Double.parseDouble(dbStructure[2]));
         this.setUnit(dbStructure[3]);
+        if (picturesMap != null)
+         this.image = picturesMap.get(dbStructure[0]);
 
     }
 

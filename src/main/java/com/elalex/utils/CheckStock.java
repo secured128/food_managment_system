@@ -22,7 +22,7 @@ public class CheckStock {
 
     }
 
-    public void checkStockProducts(List<SelectRecipeQueryDB> selectRecipeQueryDBList, HashMap<Long,SelectRecipeQueryDB> productHashMap, HashMap<Long, ProductsPlacement> productsPlacementHashMap, StockDBRepository stockDBRepository)
+    public List <StockDB> checkStockProducts(List<SelectRecipeQueryDB> selectRecipeQueryDBList, HashMap<Long,SelectRecipeQueryDB> productHashMap, HashMap<Long, ProductsPlacement> productsPlacementHashMap, StockDBRepository stockDBRepository)
     {
         List<Long> productIds = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class CheckStock {
         while  (stockDBIterator.hasNext())
         {
             StockDB stockDBIteratorRec = (StockDB)stockDBIterator.next();
-            stockLeftAmount = BigDecimal.valueOf(stockDBIteratorRec.getLeftQuantity());
+            stockLeftAmount = BigDecimal.valueOf(stockDBIteratorRec.getQuantity()).subtract(BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity()));
             stockUsedAmount = BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity());
             recipeProductAmount= BigDecimal.valueOf(productHashMap.get(stockDBIteratorRec.getProductId()).getCalculatedQuantity());
             SelectRecipeQueryDB recipeProductRec = productHashMap.get(stockDBIteratorRec.getProductId());
@@ -60,7 +60,7 @@ public class CheckStock {
             }
             productHashMap.put(stockDBIteratorRec.getProductId(),recipeProductRec);
         }
-
+       return stockDBRepositoryList;
 
     }
 

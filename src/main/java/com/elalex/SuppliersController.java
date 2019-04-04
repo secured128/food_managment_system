@@ -5,6 +5,7 @@ import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
 import com.elalex.food.model.SupplierDB;
 import com.elalex.food.model.SupplierDBRepository;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +78,8 @@ public class SuppliersController {
             InputStream input_document = new URL(url).openStream();
             XSSFWorkbook my_xls_workbook = new XSSFWorkbook(input_document);
             Excel2String excel2Csv = new Excel2String();
-            List<String[]> suppDb = excel2Csv.convert2String( my_xls_workbook, sizeOfParams, 0);
+            XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(0);
+            List<String[]> suppDb = excel2Csv.convert2String( sizeOfParams, my_worksheet);
             Iterator <String[]> iterator = suppDb.iterator();
 
             while (iterator.hasNext()) {

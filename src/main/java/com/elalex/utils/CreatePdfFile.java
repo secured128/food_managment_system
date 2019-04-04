@@ -1,6 +1,7 @@
 package com.elalex.utils;
 
 import com.elalex.food.model.ProductsPlacement;
+import com.elalex.food.model.RecipeDescriptionDB;
 import com.elalex.food.model.SelectRecipeInstructionsDB;
 import com.elalex.food.model.SelectRecipeQueryDB;
 import com.itextpdf.text.*;
@@ -19,22 +20,32 @@ import java.util.List;
 public class CreatePdfFile {
     public static String createPdfFile(List<SelectRecipeQueryDB> selectRecipeQueryDBList, List <SelectRecipeInstructionsDB> selectRecipeInstructionsDBList,
                                        String recipeName, HashMap<Long,SelectRecipeQueryDB> productHashMap,
-                                       HashMap<Long, ProductsPlacement> productsPlacementHashMap) throws IOException {
+                                       HashMap<Long, ProductsPlacement> productsPlacementHashMap,
+                                       RecipeDescriptionDB recipeDescriptionDB) throws IOException {
         System.out.println("Inside createPdfFile");
         Document document = new Document();
         String fileName = "recipe"+GeneralUtils.getDateTime()+".pdf";
         try
         {
 
+            //todo - delete yesterdays files
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
-
-            String path = "/home/alexela/Downloads/arialuni.ttf";
+            String path = "arialuni.ttf";
             FontFactory.register(path);
             BaseFont bf = BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             PdfPTable table = new PdfPTable(1);
             Font font = new Font(bf, 20);
-            Phrase phrase = new Phrase(recipeName, font);
+            document.open();
+            byte [] image = recipeDescriptionDB.getImage();
+            if (image!= null)
+            {
+                Image imgForPdf = Image.getInstance(image);
+                imgForPdf.scalePercent(30f);
+                document.add(imgForPdf);
+            }
+            Phrase phrase = new Phrase(recipeName , font);
             PdfPCell cell = new PdfPCell(phrase);
+
             addCellToPdf ( table,  cell,  phrase);
             addProductsToPdf ( table, cell,  phrase,  font,  bf,  selectRecipeQueryDBList);
             productHashMap.entrySet().removeIf(productMap->
@@ -66,7 +77,7 @@ public class CreatePdfFile {
             }
             phrase = new Phrase("", font);
             addCellToPdf ( table,  cell,  phrase);*/
-            document.open();
+
             document.add(table);
            // Paragraph
           //  document.ssetRunDirection(PdfWriter.RUN_DIRECTION_NO_BIDI)

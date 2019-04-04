@@ -139,7 +139,7 @@ ALTER TABLE public.instructions_description
   CREATE TABLE public.stock
     (
       id bigint NOT NULL,
-      product_id bigint NOT NULL REFERENCES product(id),
+      product_id bigint NOT NULL,
       quantity numeric NOT NULL,
       price numeric NOT NULL,
       creation_date date not null,

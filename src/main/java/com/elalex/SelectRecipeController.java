@@ -27,22 +27,30 @@ public class SelectRecipeController {
     private SelectRecipeInstructionsDBRepository selectRecipeInstructionsDBRepository;
     @Autowired
     private StockDBRepository stockDBRepository;
+    @Autowired
+    private RecipeDescriptionDBRepository recipeDescriptionDBRepository;
+
 
     @RequestMapping(method = GET, path = "/selectRecipeQueryUpdateStock")
 
-    public  ResponseEntity<List<SelectRecipeQueryDB>> selectRecipeQueryUpdateStock(HttpServletResponse response, String recipeName, Double quantity ) {
+    public synchronized ResponseEntity<List<SelectRecipeQueryDB>> selectRecipeQueryUpdateStock(HttpServletResponse response, String recipeName, Double quantity ) {
         try {
 
             List<SelectRecipeQueryDB> selectRecipeQueryDBList = selectRecipeQueryDBRepository.selectRecipeProductLinked(recipeName, quantity);
 
             List<SelectRecipeInstructionsDB> selectRecipeInstructionsDBList = selectRecipeInstructionsDBRepository.selectRecipeInstructions(recipeName);
+            RecipeDescriptionDB recipeDescriptionDB = recipeDescriptionDBRepository.findByRecipeName(recipeName);
 
             HashMap<Long,SelectRecipeQueryDB> productHashMap = new HashMap<>();
             HashMap<Long,ProductsPlacement> productsPlacementHashMap = new HashMap<>();
             CheckStock checkStock = new CheckStock();
-            checkStock.checkStockProducts(selectRecipeQueryDBList, productHashMap, productsPlacementHashMap, stockDBRepository);
-            String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap);
+            List <StockDB> stockList =  checkStock.checkStockProducts(selectRecipeQueryDBList, productHashMap, productsPlacementHashMap, stockDBRepository);
+            String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap, recipeDescriptionDB);
             sendEmailController.sendEmail(fileName);
+            if ((stockList != null) && (productHashMap.isEmpty()))//means that there is enough products in stock for recipe
+            {
+                stockDBRepository.saveAll(stockList);
+            }
             return ResponseEntity.ok(selectRecipeQueryDBList);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

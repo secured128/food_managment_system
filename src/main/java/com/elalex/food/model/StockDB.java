@@ -62,9 +62,6 @@ public class StockDB implements Serializable
     @Column(name = "used_quantity")
     private Double usedQuantity;
 
-    @JsonProperty("leftQuantity")
-    @Column(name = "left_quantity")
-    private Double leftQuantity;
 
 
     public StockDB()
@@ -81,7 +78,7 @@ public class StockDB implements Serializable
         this.setExpirationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[5]));
         this.setPlacement(dbStructure[6]);
         this.setUsedQuantity(Double.valueOf(dbStructure[7]));
-        this.setLeftQuantity(Double.valueOf(dbStructure[8]));
+
     }
 
     public StockDB(String json) throws Exception
@@ -95,7 +92,7 @@ public class StockDB implements Serializable
         this.setExpirationDate(stockDB.getExpirationDate());
         this.setPlacement(stockDB.getPlacement());
         this.setUsedQuantity(stockDB.getUsedQuantity());
-        this.setLeftQuantity(stockDB.getLeftQuantity());
+
     }
 
 
@@ -186,11 +183,4 @@ public class StockDB implements Serializable
         this.usedQuantity = usedQuantity;
     }
 
-    public Double getLeftQuantity() {
-        return leftQuantity;
-    }
-
-    public void setLeftQuantity(Double leftQuantity) {
-        this.leftQuantity = leftQuantity;
-    }
 }

@@ -2,12 +2,10 @@ package com.elalex.utils;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,20 +13,15 @@ public class  Excel2String
 {
 
 
-    public List<String[]> convert2String(XSSFWorkbook my_xls_workbook, int sizeOfParams, int sheetNumber) throws Exception
+    public List<String[]> convert2String( int sizeOfParams, XSSFSheet my_worksheet) throws Exception
     {
 
-
         System.out.println("inside HSSFWorkbook");
-        // Read worksheet into HSSFSheet
-        XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(sheetNumber);
         List<String[]> returnedList = new ArrayList<String[]>();
         // To iterate over the rows
         Iterator<Row> rowIterator = my_worksheet.iterator();
+        //ignore header row
         rowIterator.next();
-        // OpenCSV writer object to create CSV file
-        //   FileWriter my_csv=new FileWriter("convertedCSVFile.csv");
-
         //Loop through rows.
         while (rowIterator.hasNext())
         {
@@ -39,6 +32,7 @@ public class  Excel2String
             }
 
         }
+
         return returnedList;
     }
 
@@ -82,4 +76,37 @@ public class  Excel2String
 
         }
     }
+
+    public  HashMap<String, byte[]> readImages(XSSFSheet sheet, int imageColumn) {
+        int idColumn = 0;
+        HashMap<String, byte[]> picturesMap = new HashMap<>();
+        XSSFDrawing drawing = sheet.getDrawingPatriarch();
+        if (drawing != null) {
+            for (XSSFShape shape : drawing.getShapes()) {
+                if (shape instanceof XSSFPicture) {
+                    XSSFPicture picture = (XSSFPicture) shape;
+                    XSSFClientAnchor anchor = (XSSFClientAnchor) picture.getAnchor();
+
+                    // Ensure to use only relevant pictures
+                    short pictPlace = anchor.getCol1();
+                    if (pictPlace == imageColumn) {
+
+                        // Use the row from the anchor
+                        XSSFRow pictureRow = sheet.getRow(anchor.getRow1());
+                        if (pictureRow != null) {
+                            XSSFCell idCell = pictureRow.getCell(idColumn);
+                            if (idCell != null) {
+                                String idString = idCell.getStringCellValue();
+                                XSSFPictureData data = picture.getPictureData();
+                                byte picData[] = data.getData();
+                                picturesMap.put(idString, picData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+            return picturesMap;
+        }
+
 }
