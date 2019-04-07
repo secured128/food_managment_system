@@ -2,14 +2,11 @@
 
 package com.elalex.food.model;
 
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import java.util.List;
 
 /**
@@ -26,9 +23,9 @@ public interface StockDBRepository extends CrudRepository<StockDB, Long> {
                     "and quantity- coalesce(used_quantity,0)>0\n" +
                     " and date(expiration_date) <= CURRENT_DATE"
             , nativeQuery = true)
-//    @Transactional(propagation = )
+
     List<StockDB> selectStockQuery(@Param("ids") List<Long> ids);
-            ;
+
 
 
 }

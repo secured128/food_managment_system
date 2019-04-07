@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -23,13 +26,18 @@ import java.util.Date;
 public class TransactionLogDB implements Serializable
 {
     static public final  int NUMBER_OF_PARAMS=8;
+    static public final  String  TRANS_TYPE_GET_RECIPE_STOCK="GETSTOCK";
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
 
-    @JsonProperty("transaction_id")
+    @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @JsonProperty("transactionId")
+    @Column (name = "transaction_id")
     private long transactionId;
 
     @JsonProperty("userId")
@@ -44,17 +52,15 @@ public class TransactionLogDB implements Serializable
     @Column(name = "transaction_type")
     private String transactionType;
 
-    @JsonProperty("creationDate")
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date")
     private Date creationDate;
 
-    @JsonProperty("recipeDescName")
-    @Column(name = "recipe_desc_name")
-    private String recipeDescName;
+    @JsonProperty("recipeName")
+    @Column(name = "recipe_name")
+    private String recipeName;
 
-    @JsonProperty("recipeQuantity")
-    @Column(name = "recipe_quantity")
-    private Double recipeQuantity;
 
     @JsonProperty("stockId")
     @Column(name = "stock_id")
@@ -69,18 +75,7 @@ public class TransactionLogDB implements Serializable
     {
 
     }
-    public TransactionLogDB(  String dbStructure[])throws Exception
-    {
-        this.setTransactionId( Long.parseLong(dbStructure[0]));
-        this.setUserId(dbStructure[1]);
-        this.setUserEmail(dbStructure[2]);
-        this.setTransactionType(dbStructure[3]);
-        this.setCreationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[4]))  ;
-        this.setRecipeDescName(dbStructure[5]);
-        this.setRecipeQuantity(Double.valueOf(dbStructure[6]));
-        this.setStockId( Long.parseLong(dbStructure[7]));
-        this.setUsedQuantity( Double.parseDouble(dbStructure[8]));
-    }
+
 
     public TransactionLogDB(String json) throws Exception
     {
@@ -90,8 +85,7 @@ public class TransactionLogDB implements Serializable
         this.setUserEmail(transactionLogDB.getUserEmail());
         this.setTransactionType(transactionLogDB.getTransactionType());
         this.setCreationDate(transactionLogDB.getCreationDate())  ;
-        this.setRecipeDescName(transactionLogDB.getRecipeDescName());
-        this.setRecipeQuantity(transactionLogDB.getRecipeQuantity());
+        this.setRecipeName(transactionLogDB.getRecipeName());
         this.setStockId( transactionLogDB.getStockId());
         this.setUsedQuantity( transactionLogDB.getUsedQuantity());
     }
@@ -153,20 +147,12 @@ public class TransactionLogDB implements Serializable
         this.creationDate = creationDate;
     }
 
-    public String getRecipeDescName() {
-        return recipeDescName;
+    public String getRecipeName() {
+        return recipeName;
     }
 
-    public void setRecipeDescName(String recipeDescName) {
-        this.recipeDescName = recipeDescName;
-    }
-
-    public Double getRecipeQuantity() {
-        return recipeQuantity;
-    }
-
-    public void setRecipeQuantity(Double recipeQuantity) {
-        this.recipeQuantity = recipeQuantity;
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
     }
 
     public String getUserId() {

@@ -4,6 +4,7 @@ package com.elalex;
 import com.elalex.food.model.*;
 import com.elalex.utils.CheckStock;
 import com.elalex.utils.CreatePdfFile;
+import com.elalex.utils.CreateTransactionLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +30,18 @@ public class SelectRecipeController {
     private StockDBRepository stockDBRepository;
     @Autowired
     private RecipeDescriptionDBRepository recipeDescriptionDBRepository;
+    @Autowired
+    private TransactionLogDBRepository transactionLogDBRepository;
+    @Autowired
+    private GetSequenceDBRepository getSequenceDBRepository;
 
 
     @RequestMapping(method = GET, path = "/selectRecipeQueryUpdateStock")
 
-    public synchronized ResponseEntity<List<SelectRecipeQueryDB>> selectRecipeQueryUpdateStock(HttpServletResponse response, String recipeName, Double quantity ) {
+    public synchronized ResponseEntity<List<SelectRecipeQueryDB>> selectRecipeQueryUpdateStock(HttpServletResponse response, String recipeName,
+                                                                                               Double quantity,
+                                                                                               String userId,
+                                                                                               String userEmail) {
         try {
 
             List<SelectRecipeQueryDB> selectRecipeQueryDBList = selectRecipeQueryDBRepository.selectRecipeProductLinked(recipeName, quantity);
@@ -47,9 +55,15 @@ public class SelectRecipeController {
             List <StockDB> stockList =  checkStock.checkStockProducts(selectRecipeQueryDBList, productHashMap, productsPlacementHashMap, stockDBRepository);
             String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap, recipeDescriptionDB);
             sendEmailController.sendEmail(fileName);
+            GetSequenceDB transId = null;
             if ((stockList != null) && (productHashMap.isEmpty()))//means that there is enough products in stock for recipe
             {
                 stockDBRepository.saveAll(stockList);
+                CreateTransactionLog.createTransactionLogDB( getSequenceDBRepository,  transactionLogDBRepository,
+                         productsPlacementHashMap,
+                         userId,
+                         userEmail,
+                         recipeName);
             }
             return ResponseEntity.ok(selectRecipeQueryDBList);
         } catch (Exception e) {

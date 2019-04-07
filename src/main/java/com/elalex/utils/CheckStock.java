@@ -46,7 +46,7 @@ public class CheckStock {
             stockUsedAmount = BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity());
             recipeProductAmount= BigDecimal.valueOf(productHashMap.get(stockDBIteratorRec.getProductId()).getCalculatedQuantity());
             SelectRecipeQueryDB recipeProductRec = productHashMap.get(stockDBIteratorRec.getProductId());
-            if (stockLeftAmount.compareTo(recipeProductAmount)==1)
+            if (stockLeftAmount.compareTo(recipeProductAmount)==1) //there is enough product in currect stock record
             {
                 stockDBIteratorRec.setUsedQuantity(stockUsedAmount.add(recipeProductAmount).doubleValue());
                 recipeProductRec.setCalculatedQuantity(0d);
@@ -64,18 +64,18 @@ public class CheckStock {
 
     }
 
-    private void updateProductPlacementRecord(HashMap<Long,ProductsPlacement> productsPlacementHashMap, BigDecimal recipeProductAmount, StockDB stockDBIteratorRec, SelectRecipeQueryDB recipeProductRec)
+    private void updateProductPlacementRecord(HashMap<Long,ProductsPlacement> productsPlacementHashMap, BigDecimal currentAmount, StockDB stockDBIteratorRec, SelectRecipeQueryDB recipeProductRec)
     {
         ProductsPlacement productsPlacement;
         if(productsPlacementHashMap.containsKey(stockDBIteratorRec.getId()))
         {
             productsPlacement = productsPlacementHashMap.get(stockDBIteratorRec.getId());
-            productsPlacement.setQuantity(recipeProductAmount.add(BigDecimal.valueOf(productsPlacement.getQuantity())).doubleValue());
+            productsPlacement.setQuantity((BigDecimal.valueOf(productsPlacement.getQuantity()).add(currentAmount)).doubleValue());
             productsPlacementHashMap.put(stockDBIteratorRec.getId(),productsPlacement);
         }
         else
         {
-            populateProductsPlacement(productsPlacementHashMap, recipeProductAmount, stockDBIteratorRec, recipeProductRec );
+            populateProductsPlacement(productsPlacementHashMap, currentAmount, stockDBIteratorRec, recipeProductRec );
         }
     }
 

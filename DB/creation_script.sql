@@ -159,23 +159,32 @@ ALTER TABLE public.instructions_description
 
      CREATE TABLE public.transaction_log
     (
+      id bigint NOT NULL,
       transaction_id bigint NOT NULL,
       user_id character varying(255) NOT NULL,
       user_email character varying(255) NOT NULL,
       transaction_type character varying(255) NOT NULL,
       creation_date date not null,
-      recipe_desc_name  character varying(255) NOT NULL REFERENCES recipe_description(recipe_name),
-      recipe_quantity  numeric NOT NULL,
-      stock_id bigint NOT NULL REFERENCES stock(id),
+      recipe_name  character varying(255) NOT NULL,
+      stock_id bigint NOT NULL ,
       used_quantity numeric NOT NULL,
-      CONSTRAINT transaction_log_pkey PRIMARY KEY (transaction_id)
-
+      CONSTRAINT transaction_log_pkey PRIMARY KEY (id)
     )
     WITH (
       OIDS=FALSE
     );
     ALTER TABLE public.transaction_log
       OWNER TO food_manager;
+    create sequence transaction_log_seq
+    grant all on sequence transaction_log_seq to food_manager
+
+
+create sequence hibernate_sequence
+
+
+grant all on sequence hibernate_sequence to food_manager
+
+
 
 
 
