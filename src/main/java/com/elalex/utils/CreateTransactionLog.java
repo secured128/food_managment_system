@@ -11,7 +11,6 @@ public class CreateTransactionLog
 {
     public static void createTransactionLogDB(GetSequenceDBRepository getSequenceDBRepository, TransactionLogDBRepository transactionLogDBRepository,
                                               HashMap<Long, ProductsPlacement> productsPlacementHashMap,
-                                              String userId,
                                               String userEmail,
                                               String recipeName)
 
@@ -25,7 +24,6 @@ public class CreateTransactionLog
            ProductsPlacement stockRecValues = (ProductsPlacement)stockRec.getValue();
            TransactionLogDB transLogRec = new TransactionLogDB();
            transLogRec.setTransactionId(transId);
-           transLogRec.setUserId(userId);
            transLogRec.setUserEmail(userEmail);
            transLogRec.setTransactionType(transLogRec.TRANS_TYPE_GET_RECIPE_STOCK);
            transLogRec.setRecipeName(recipeName);

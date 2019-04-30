@@ -1,5 +1,7 @@
 package com.elalex;
 
+import com.elalex.food.model.RecipeDescriptionDB;
+import com.elalex.food.model.RecipeDescriptionDBRepository;
 import com.elalex.utils.CreatePdfFile;
 import com.elalex.utils.Excel2String;
 import com.elalex.utils.GeneralUtils;
@@ -29,6 +31,8 @@ public class SuppliersController {
 
     @Autowired
     private SupplierDBRepository supplierDBRepository;
+    @Autowired
+    private RecipeDescriptionDBRepository recipeDescriptionDBRepository;
 
     @RequestMapping(value = "/supplier/{id}", method = GET)
     @ResponseBody
@@ -64,6 +68,29 @@ public class SuppliersController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @RequestMapping(method = GET, path = "/getAllRecipes")
+    public ResponseEntity<List<RecipeDescriptionDB>> getAllRecipes(HttpServletResponse response) {
+        GeneralUtils.addHeader(response);
+        try {
+            List<RecipeDescriptionDB> suppliersList = new ArrayList<>();
+
+            Iterable<RecipeDescriptionDB> suppliersAll = recipeDescriptionDBRepository.findAll();
+            if (suppliersAll != null) {
+                Iterator<RecipeDescriptionDB> supplierIterator = suppliersAll.iterator();
+                while (supplierIterator.hasNext()) {
+                    suppliersList.add(supplierIterator.next());
+                }
+                return ResponseEntity.ok(suppliersList);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 
 
     @RequestMapping(method = GET, path = "/uploadFile/Supplier")

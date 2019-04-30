@@ -26,8 +26,14 @@ public class RecipeDescriptionDB implements Serializable
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
 
-    @JsonProperty("recipeName")
+
+    @JsonProperty("id")
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @JsonProperty("recipeName")
+    @Column(name = "recipe_name")
     private String recipeName;
 
     @JsonProperty("description")
@@ -69,6 +75,7 @@ public class RecipeDescriptionDB implements Serializable
         this.setDescription(recipeDescriptionDB.getDescription());
         this.setSizeOfRecipe(recipeDescriptionDB.getSizeOfRecipe());
         this.setUnit(recipeDescriptionDB.getUnit());
+        this.setImage(recipeDescriptionDB.getImage());
     }
 
 
@@ -123,5 +130,13 @@ public class RecipeDescriptionDB implements Serializable
 
     public void setRecipeName(String recipeName) {
         this.recipeName = recipeName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

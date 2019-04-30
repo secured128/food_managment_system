@@ -1,5 +1,6 @@
 package com.elalex.utils;
 
+import com.elalex.Application;
 import com.elalex.food.model.ProductsPlacement;
 import com.elalex.food.model.RecipeDescriptionDB;
 import com.elalex.food.model.SelectRecipeInstructionsDB;
@@ -17,12 +18,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.elalex.Application.bf;
+import static com.elalex.Application.recipesPath;
+
 public class CreatePdfFile {
     public static String createPdfFile(List<SelectRecipeQueryDB> selectRecipeQueryDBList, List <SelectRecipeInstructionsDB> selectRecipeInstructionsDBList,
                                        String recipeName, HashMap<Long,SelectRecipeQueryDB> productHashMap,
                                        HashMap<Long, ProductsPlacement> productsPlacementHashMap,
                                        RecipeDescriptionDB recipeDescriptionDB) throws IOException {
         System.out.println("Inside createPdfFile");
+        TestMemory.testMem();
         Document document = new Document();
         String fileName = "recipe"+GeneralUtils.getDateTime()+".pdf";
         try
@@ -30,10 +35,11 @@ public class CreatePdfFile {
 
             //todo - delete yesterdays files
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
-            String path = "arialuni.ttf";
+           /*/ String path = "arialuni.ttf";
             FontFactory.register(path);
-            BaseFont bf = BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont bf = BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);*/
             PdfPTable table = new PdfPTable(1);
+
             Font font = new Font(bf, 20);
             document.open();
             byte [] image = recipeDescriptionDB.getImage();
@@ -60,6 +66,7 @@ public class CreatePdfFile {
             {
                 addMissingProductsToPdf(table,  cell,  phrase,  font,  bf, productHashMap);
             }
+            TestMemory.testMem();
           /*  font = new Font(bf, 15);
             phrase = new Phrase(
                     "חומרים", font);
@@ -77,10 +84,11 @@ public class CreatePdfFile {
             }
             phrase = new Phrase("", font);
             addCellToPdf ( table,  cell,  phrase);*/
-
+            TestMemory.testMem();
             document.add(table);
            // Paragraph
           //  document.ssetRunDirection(PdfWriter.RUN_DIRECTION_NO_BIDI)
+            TestMemory.testMem();
             document.close();
             writer.close();
         } catch (DocumentException e)

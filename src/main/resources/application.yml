@@ -11,7 +11,7 @@ management:
     port: 9001
 spring:
   profiles:
-    active: dev
+    active: prod
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     swow-sql: true
@@ -28,6 +28,17 @@ spring:
 ---
 spring:
   profiles: dev
+  spring:
+    jpa:
+      properties:
+        hibernate:
+          show_sql: true
+          format_sql: true
+  logging:
+    level:
+      org:
+        hibernate:
+          type: trace
   datasource:
     url: jdbc:postgresql://localhost/food_managment_db
     username: food_manager
@@ -44,14 +55,3 @@ spring:
 server:
   port: ${PORT:8080}
 ---
-spring:
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-logging:
-  level:
-    org:
-      hibernate:
-        type: trace

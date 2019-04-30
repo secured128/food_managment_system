@@ -21,7 +21,7 @@ public interface StockDBRepository extends CrudRepository<StockDB, Long> {
     @Query(value=
             "select stock.*  from stock where product_id in (:ids)\n"+
                     "and quantity- coalesce(used_quantity,0)>0\n" +
-                    " and date(expiration_date) <= CURRENT_DATE"
+                    " and date(expiration_date) >= CURRENT_DATE"
             , nativeQuery = true)
 
     List<StockDB> selectStockQuery(@Param("ids") List<Long> ids);

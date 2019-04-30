@@ -6,14 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -40,9 +37,6 @@ public class TransactionLogDB implements Serializable
     @Column (name = "transaction_id")
     private long transactionId;
 
-    @JsonProperty("userId")
-    @Column(name = "user_id")
-    private String userId;
 
     @JsonProperty("userEmail")
     @Column(name = "user_email")
@@ -81,7 +75,6 @@ public class TransactionLogDB implements Serializable
     {
         TransactionLogDB transactionLogDB = getJsonMapper().readValue(json, TransactionLogDB.class);
         this.setTransactionId(transactionLogDB.getTransactionId());
-        this.setUserId(transactionLogDB.getUserId());
         this.setUserEmail(transactionLogDB.getUserEmail());
         this.setTransactionType(transactionLogDB.getTransactionType());
         this.setCreationDate(transactionLogDB.getCreationDate())  ;
@@ -155,13 +148,7 @@ public class TransactionLogDB implements Serializable
         this.recipeName = recipeName;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public long getStockId() {
         return stockId;

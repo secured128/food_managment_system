@@ -79,12 +79,14 @@ CREATE TABLE public.product
 
 CREATE TABLE public.recipe_description
 (
+  id bigint NOT NULL,
   recipe_name character varying(255),
   description character varying(255),
   image bytea,
   size_of_recipe numeric,
   unit character varying(255) NOT NULL REFERENCES units(unit_name),
-  CONSTRAINT recipe_description_pkey PRIMARY KEY (recipe_name)
+  CONSTRAINT recipe_description_pkey PRIMARY KEY (id),
+  CONSTRAINT recipe_description_unique_idx UNIQUE (recipe_name)
 )
 WITH (
   OIDS=FALSE
@@ -98,6 +100,7 @@ CREATE TABLE public.instructions_description
   instruction_description character varying(255),
   image bytea,
     CONSTRAINT instructions_description_pkey PRIMARY KEY (instruct_name)
+
 
 )
 WITH (
@@ -161,7 +164,6 @@ ALTER TABLE public.instructions_description
     (
       id bigint NOT NULL,
       transaction_id bigint NOT NULL,
-      user_id character varying(255) NOT NULL,
       user_email character varying(255) NOT NULL,
       transaction_type character varying(255) NOT NULL,
       creation_date date not null,
