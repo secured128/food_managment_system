@@ -47,7 +47,8 @@ public class SelectRecipeController {
 
     public synchronized  void selectRecipeQueryUpdateStock(HttpServletResponse response, Long recipeId,
                                                                                                Double quantity,
-                                                                                               String userEmail) {
+                                                                                               String userEmail,
+                                                                                               String updateStockInd) {
         try {
 
             RecipeDescriptionDB recipeDescriptionDB = recipeDescriptionDBRepository.findById(recipeId).get();
@@ -64,7 +65,7 @@ public class SelectRecipeController {
             String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap, recipeDescriptionDB);
             sendEmailController.sendEmail(fileName);
             GetSequenceDB transId = null;
-            if ((stockList != null) && (productHashMap.isEmpty()))//means that there is enough products in stock for recipe
+            if ( updateStockInd.equals("YES") && (stockList != null) && (productHashMap.isEmpty()))//means that there is enough products in stock for recipe
             {
                 stockDBRepository.saveAll(stockList);
                 CreateTransactionLog.createTransactionLogDB( getSequenceDBRepository,  transactionLogDBRepository,
@@ -73,7 +74,9 @@ public class SelectRecipeController {
                          recipeName);
             }
             TestMemory.testMem();
+            System.out.printf("before returnPdfFile");
             returnPdfFile(fileName, response);
+            System.out.printf("after returnPdfFile");
            // return ResponseEntity.ok(selectRecipeQueryDBList);
         } catch (Exception e) {
            // return ResponseEntity.badRequest().build();
@@ -82,6 +85,7 @@ public class SelectRecipeController {
 
     private void returnPdfFile( String fileName, HttpServletResponse response)
     {
+        System.out.printf("inside returnPdfFile");
         File file = new File(fileName);
         try {
             InputStream myStream = new URL(file.toURI().toString()).openStream();

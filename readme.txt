@@ -19,3 +19,8 @@ DB connection :
 https://devcenter.heroku.com/articles/container-registry-and-runtime
 
 https://devcenter.heroku.com/articles/heroku-postgresql
+
+
+
+
+
