@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Thread.sleep;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
@@ -48,7 +49,8 @@ public class SelectRecipeController {
     public synchronized  void selectRecipeQueryUpdateStock(HttpServletResponse response, Long recipeId,
                                                                                                Double quantity,
                                                                                                String userEmail,
-                                                                                               String updateStockInd) {
+                                                                                               String updateStockInd)
+    {
         try {
 
             RecipeDescriptionDB recipeDescriptionDB = recipeDescriptionDBRepository.findById(recipeId).get();
@@ -71,9 +73,10 @@ public class SelectRecipeController {
                 CreateTransactionLog.createTransactionLogDB( getSequenceDBRepository,  transactionLogDBRepository,
                          productsPlacementHashMap,
                          userEmail,
-                         recipeName);
+                         recipeName,
+                         quantity,
+                         recipeDescriptionDB.getUnit());
             }
-            TestMemory.testMem();
             System.out.printf("before returnPdfFile");
             returnPdfFile(fileName, response);
             System.out.printf("after returnPdfFile");

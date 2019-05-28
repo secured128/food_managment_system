@@ -168,8 +168,11 @@ ALTER TABLE public.instructions_description
       transaction_type character varying(255) NOT NULL,
       creation_date date not null,
       recipe_name  character varying(255) NOT NULL,
+      recipe_quantity numeric NOT NULL,
+      recipe_unit character varying(255) NOT NULL,
       stock_id bigint NOT NULL ,
       used_quantity numeric NOT NULL,
+      cancel_ind character(1),
       CONSTRAINT transaction_log_pkey PRIMARY KEY (id)
     )
     WITH (

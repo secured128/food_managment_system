@@ -13,11 +13,12 @@ public interface TransactionLogSelectCreatedRecipesDBRepository extends CrudRepo
 
 
     @Query (value=
-            "select distinct transaction_id, recipe_name , to_char(creation_date, 'dd-mm-yyyy HH:MI')creation_date , user_email " +
+            "select distinct transaction_id, recipe_name , to_char(creation_date, 'dd-mm-yyyy HH:MI')creation_date , user_email, recipe_quantity, recipe_unit " +
                     "from transaction_log " +
                     "where user_email=?1 " +
                     "and creation_date >= to_timestamp(?2,'YYYY-MM-DD') "+
                     "and  creation_date < to_timestamp(?3,'YYYY-MM-DD')+ INTERVAL '1 day' " +
+                    " and COALESCE(cancel_ind,'N') = 'N' "+
                     "order by transaction_id desc "
             , nativeQuery = true)
     List<TransactionLogSelectCreatedRecipesDB> selectTransactionLog(String userEmail, String fromDate, String toDate);

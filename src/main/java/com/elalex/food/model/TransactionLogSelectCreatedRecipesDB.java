@@ -2,17 +2,15 @@
 package com.elalex.food.model;
 
 
-        import com.fasterxml.jackson.annotation.JsonIgnore;
-        import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-        import com.fasterxml.jackson.annotation.JsonProperty;
-        import com.fasterxml.jackson.databind.ObjectMapper;
-        import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-        import javax.persistence.*;
-        import java.io.IOException;
-        import java.io.Serializable;
-        import java.io.StringWriter;
-        import java.util.Date;
+import javax.persistence.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringWriter;
 
 
 
@@ -45,6 +43,14 @@ public class TransactionLogSelectCreatedRecipesDB implements Serializable
     @JsonProperty("recipeName")
     @Column(name = "recipe_name")
     private String recipeName;
+
+    @JsonProperty("recipeQuantity")
+    @Column(name = "recipe_quantity")
+    private Double recipeQuantity;
+
+    @JsonProperty("recipeUnit")
+    @Column(name = "recipe_unit")
+    private String recipeUnit;
 
 
     public TransactionLogSelectCreatedRecipesDB()
@@ -110,4 +116,19 @@ public class TransactionLogSelectCreatedRecipesDB implements Serializable
     }
 
 
+    public Double getRecipeQuantity() {
+        return recipeQuantity;
+    }
+
+    public void setRecipeQuantity(Double recipeQuantity) {
+        this.recipeQuantity = recipeQuantity;
+    }
+
+    public String getRecipeUnit() {
+        return recipeUnit;
+    }
+
+    public void setRecipeUnit(String recipeUnit) {
+        this.recipeUnit = recipeUnit;
+    }
 }

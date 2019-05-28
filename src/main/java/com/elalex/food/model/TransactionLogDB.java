@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class TransactionLogDB implements Serializable
 {
-    static public final  int NUMBER_OF_PARAMS=8;
+   // static public final  int NUMBER_OF_PARAMS=8;
     static public final  String  TRANS_TYPE_GET_RECIPE_STOCK="GETSTOCK";
     @JsonIgnore
     @Transient
@@ -55,6 +55,14 @@ public class TransactionLogDB implements Serializable
     @Column(name = "recipe_name")
     private String recipeName;
 
+    @JsonProperty("recipeQuantity")
+    @Column(name = "recipe_quantity")
+    private Double recipeQuantity;
+
+    @JsonProperty("recipeUnit")
+    @Column(name = "recipe_unit")
+    private String recipeUnit;
+
 
     @JsonProperty("stockId")
     @Column(name = "stock_id")
@@ -64,6 +72,9 @@ public class TransactionLogDB implements Serializable
     @Column(name = "used_quantity")
     private Double usedQuantity;
 
+    @JsonProperty("cancelInd")
+    @Column(name = "cancel_ind")
+    private char cancelInd;
 
     public TransactionLogDB()
     {
@@ -81,6 +92,9 @@ public class TransactionLogDB implements Serializable
         this.setRecipeName(transactionLogDB.getRecipeName());
         this.setStockId( transactionLogDB.getStockId());
         this.setUsedQuantity( transactionLogDB.getUsedQuantity());
+        this.setRecipeQuantity(transactionLogDB.getRecipeQuantity());
+        this.setRecipeUnit(transactionLogDB.getRecipeUnit());
+        this.setCancelInd(transactionLogDB.getCancelInd());
     }
 
 
@@ -164,5 +178,29 @@ public class TransactionLogDB implements Serializable
 
     public void setUsedQuantity(Double usedQuantity) {
         this.usedQuantity = usedQuantity;
+    }
+
+    public Double getRecipeQuantity() {
+        return recipeQuantity;
+    }
+
+    public void setRecipeQuantity(Double recipeQuantity) {
+        this.recipeQuantity = recipeQuantity;
+    }
+
+    public String getRecipeUnit() {
+        return recipeUnit;
+    }
+
+    public void setRecipeUnit(String recipeUnit) {
+        this.recipeUnit = recipeUnit;
+    }
+
+    public char getCancelInd() {
+        return cancelInd;
+    }
+
+    public void setCancelInd(char cancelInd) {
+        this.cancelInd = cancelInd;
     }
 }

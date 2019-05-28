@@ -1,17 +1,14 @@
 package com.elalex;
 
-import com.elalex.food.model.TransactionLogSelectCreatedRecipesDB;
-import com.elalex.food.model.TransactionLogSelectCreatedRecipesDBRepository;
+import com.elalex.food.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -25,7 +22,6 @@ public class SelectTransactionLogController {
     private TransactionLogSelectCreatedRecipesDBRepository selectTransactionLogSelectCreatedRecipesDBRepository;
 
     @RequestMapping(method = GET, path = "/selectTransactionLog")
-    //ResponseEntity<List<SelectRecipeQueryDB>>
 
     public ResponseEntity<List<TransactionLogSelectCreatedRecipesDB>> selectTransactionLog(HttpServletResponse response,
                                                            String userEmail,
@@ -54,5 +50,52 @@ public class SelectTransactionLogController {
         }
     }
 
+    @Autowired
+    private TransactionLogDBRepository selectTransactionLogDBRepository;
+    @Autowired
+    private StockDBRepository stockDBRepository;
+
+    @RequestMapping(method = GET, path = "/cancelTransaction")
+
+    public synchronized void cancelTransaction(HttpServletResponse response,
+                                               Long transactionId) {
+        try {
+
+           List<TransactionLogDB> transactionLogDBList =
+                    selectTransactionLogDBRepository.selectTransactionLogByTransId(transactionId);
+            System.out.print("after selectTransactionLog ");
+            // return ResponseEntity.ok(selectRecipeQueryDBList);
+            if (transactionLogDBList != null) {
+                System.out.print("in update  ");
+                Iterator<TransactionLogDB> transactionLogIterator = transactionLogDBList.iterator();
+                List <Long> stockIds = new ArrayList<Long>();
+                HashMap<Long,BigDecimal> stockTransLogAmtMap = new HashMap<>();
+                TransactionLogDB transLogRec = null;
+                while (transactionLogIterator.hasNext()) {
+                    transLogRec = transactionLogIterator.next();
+                    stockIds.add(transLogRec.getStockId());
+                    stockTransLogAmtMap.put(transLogRec.getStockId(),BigDecimal.valueOf(transLogRec.getUsedQuantity()) );
+                    transLogRec.setCancelInd('Y');
+                }
+                Iterable<StockDB> stockDBList = stockDBRepository.findAllById(stockIds);
+                Iterator<StockDB> stockDBListItrator = stockDBList.iterator();
+                StockDB stockDBRec = null;
+                BigDecimal stockUsedAmount = new BigDecimal(0);
+                while (stockDBListItrator.hasNext())
+                {
+                    stockDBRec= stockDBListItrator.next();
+                    stockUsedAmount = BigDecimal.valueOf(stockDBRec.getUsedQuantity()).subtract(stockTransLogAmtMap.get(stockDBRec.getId()));
+                    stockDBRec.setUsedQuantity(stockUsedAmount.doubleValue());
+                }
+                stockDBRepository.saveAll(stockDBList);
+                selectTransactionLogDBRepository.saveAll(transactionLogDBList);
+            } else {
+
+        }
+          }
+        catch (Exception e) {
+
+        }
+    }
 
 }
