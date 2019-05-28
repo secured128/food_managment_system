@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -76,6 +77,7 @@ public class SelectTransactionLogController {
                     stockIds.add(transLogRec.getStockId());
                     stockTransLogAmtMap.put(transLogRec.getStockId(),BigDecimal.valueOf(transLogRec.getUsedQuantity()) );
                     transLogRec.setCancelInd('Y');
+                    transLogRec.setCancellationTime(LocalDateTime.now());
                 }
                 Iterable<StockDB> stockDBList = stockDBRepository.findAllById(stockIds);
                 Iterator<StockDB> stockDBListItrator = stockDBList.iterator();

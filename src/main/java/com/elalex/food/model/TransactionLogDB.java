@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -76,6 +77,11 @@ public class TransactionLogDB implements Serializable
     @Column(name = "cancel_ind")
     private char cancelInd;
 
+    @JsonProperty("cancellationTime")
+    @Column(name = "cancellation_time")
+    private LocalDateTime cancellationTime;
+
+
     public TransactionLogDB()
     {
 
@@ -95,6 +101,7 @@ public class TransactionLogDB implements Serializable
         this.setRecipeQuantity(transactionLogDB.getRecipeQuantity());
         this.setRecipeUnit(transactionLogDB.getRecipeUnit());
         this.setCancelInd(transactionLogDB.getCancelInd());
+        this.setCancellationTime(transactionLogDB.getCancellationTime());
     }
 
 
@@ -202,5 +209,13 @@ public class TransactionLogDB implements Serializable
 
     public void setCancelInd(char cancelInd) {
         this.cancelInd = cancelInd;
+    }
+
+    public LocalDateTime getCancellationTime() {
+        return cancellationTime;
+    }
+
+    public void setCancellationTime(LocalDateTime cancellationTime) {
+        this.cancellationTime = cancellationTime;
     }
 }

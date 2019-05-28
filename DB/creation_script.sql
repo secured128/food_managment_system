@@ -166,13 +166,14 @@ ALTER TABLE public.instructions_description
       transaction_id bigint NOT NULL,
       user_email character varying(255) NOT NULL,
       transaction_type character varying(255) NOT NULL,
-      creation_date date not null,
+      creation_date timestamp without time zone not null,
       recipe_name  character varying(255) NOT NULL,
       recipe_quantity numeric NOT NULL,
       recipe_unit character varying(255) NOT NULL,
       stock_id bigint NOT NULL ,
       used_quantity numeric NOT NULL,
       cancel_ind character(1),
+      cancellation_time timestamp without time zone,
       CONSTRAINT transaction_log_pkey PRIMARY KEY (id)
     )
     WITH (
