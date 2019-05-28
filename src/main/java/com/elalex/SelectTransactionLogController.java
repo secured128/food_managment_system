@@ -76,7 +76,7 @@ public class SelectTransactionLogController {
                     transLogRec = transactionLogIterator.next();
                     stockIds.add(transLogRec.getStockId());
                     stockTransLogAmtMap.put(transLogRec.getStockId(),BigDecimal.valueOf(transLogRec.getUsedQuantity()) );
-                    transLogRec.setCancelInd('Y');
+                    transLogRec.setCancelInd("Y");
                     transLogRec.setCancellationTime(LocalDateTime.now());
                 }
                 Iterable<StockDB> stockDBList = stockDBRepository.findAllById(stockIds);
@@ -96,7 +96,7 @@ public class SelectTransactionLogController {
         }
           }
         catch (Exception e) {
-
+            System.out.print("error");
         }
     }
 

@@ -31,7 +31,7 @@ public class CreateTransactionLog
            transLogRec.setRecipeName(recipeName);
            transLogRec.setRecipeQuantity(recipeQuantity);
            transLogRec.setRecipeUnit(recipeUnit);
-           transLogRec.setCancelInd('N');
+           transLogRec.setCancelInd("N");
            transLogRec.setUsedQuantity(stockRecValues.getQuantity());
            transLogRec.setStockId(stockRec.getKey());
            transactionLogDB.add(transLogRec);

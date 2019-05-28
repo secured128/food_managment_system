@@ -75,7 +75,7 @@ public class TransactionLogDB implements Serializable
 
     @JsonProperty("cancelInd")
     @Column(name = "cancel_ind")
-    private char cancelInd;
+    private String cancelInd;
 
     @JsonProperty("cancellationTime")
     @Column(name = "cancellation_time")
@@ -203,11 +203,11 @@ public class TransactionLogDB implements Serializable
         this.recipeUnit = recipeUnit;
     }
 
-    public char getCancelInd() {
+    public String getCancelInd() {
         return cancelInd;
     }
 
-    public void setCancelInd(char cancelInd) {
+    public void setCancelInd(String cancelInd) {
         this.cancelInd = cancelInd;
     }
 
