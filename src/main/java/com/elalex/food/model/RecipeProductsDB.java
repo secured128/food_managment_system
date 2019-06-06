@@ -18,7 +18,7 @@ import java.io.StringWriter;
 @Table(name = "recipe_products")
 public class RecipeProductsDB implements Serializable
 {
-    static public final  int NUMBER_OF_PARAMS=4;
+    static public final  int NUMBER_OF_PARAMS=5;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
@@ -48,8 +48,9 @@ public class RecipeProductsDB implements Serializable
     {
         this.setId((long) Double.parseDouble(dbStructure[0]));
         this.setRecipeDescName(dbStructure[1]);
-        this.setProductId((long) Double.parseDouble(dbStructure[2]));
+        //we skip 2 since it is product name which is not relevant for table. Relevant for excel only
         this.setQuantity(Double.parseDouble(dbStructure[3]));
+        this.setProductId((long) Double.parseDouble(dbStructure[4]));
     }
 
     public RecipeProductsDB(String json) throws Exception

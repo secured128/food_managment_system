@@ -64,7 +64,7 @@ public class SelectRecipeController {
             HashMap<Long,ProductsPlacement> productsPlacementHashMap = new HashMap<>();
             CheckStock checkStock = new CheckStock();
             List <StockDB> stockList =  checkStock.checkStockProducts(selectRecipeQueryDBList, productHashMap, productsPlacementHashMap, stockDBRepository);
-            String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap, recipeDescriptionDB);
+            String fileName = CreatePdfFile.createPdfFile(selectRecipeQueryDBList, selectRecipeInstructionsDBList, recipeName, productHashMap, productsPlacementHashMap, recipeDescriptionDB, quantity);
             sendEmailController.sendEmail(fileName);
             GetSequenceDB transId = null;
             if ( updateStockInd.equals("YES") && (stockList != null) && (productHashMap.isEmpty()))//means that there is enough products in stock for recipe
