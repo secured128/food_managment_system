@@ -93,7 +93,7 @@ public class SuppliersController {
 
 
 
-    @RequestMapping(method = GET, path = "/uploadFile/Supplier")
+  /*  @RequestMapping(method = GET, path = "/uploadFile/Supplier")
 
     public ResponseEntity<List<SupplierDB>> readFile( HttpServletResponse response, String url ) {
         try {
@@ -106,7 +106,7 @@ public class SuppliersController {
             XSSFWorkbook my_xls_workbook = new XSSFWorkbook(input_document);
             Excel2String excel2Csv = new Excel2String();
             XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(0);
-            List<String[]> suppDb = excel2Csv.convert2String( sizeOfParams, my_worksheet);
+            List<String[]> suppDb = excel2Csv.convert2String( sizeOfParams, my_worksheet, 1);
             Iterator <String[]> iterator = suppDb.iterator();
 
             while (iterator.hasNext()) {
@@ -124,4 +124,5 @@ public class SuppliersController {
         }
 
 
-    }}
+    }*/
+}
