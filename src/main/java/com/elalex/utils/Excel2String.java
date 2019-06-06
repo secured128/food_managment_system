@@ -1,5 +1,6 @@
 package com.elalex.utils;
 
+import com.elalex.FileUploadController;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.*;
@@ -9,28 +10,37 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.elalex.FileUploadController.ExcelSheetsOrder.MEASURE_CONVERSION;
+
 public class  Excel2String
 {
 
 
-    public List<String[]> convert2String( int sizeOfParams, XSSFSheet my_worksheet) throws Exception
+    public List<String[]> convert2String( int sizeOfParams, XSSFSheet my_worksheet, FileUploadController.ExcelSheetsOrder excelSheetsOrder) throws Exception
     {
 
         System.out.println("inside HSSFWorkbook");
         List<String[]> returnedList = new ArrayList<String[]>();
         // To iterate over the rows
-        Iterator<Row> rowIterator = my_worksheet.iterator();
-        //ignore header row
-        rowIterator.next();
-        //Loop through rows.
-        while (rowIterator.hasNext())
-        {
-            Row row = rowIterator.next();
-            if (row != null)
-            {
-                handleRow(sizeOfParams, row, returnedList);
-            }
 
+        Iterator<Row> rowIterator = my_worksheet.iterator();
+        if (excelSheetsOrder==MEASURE_CONVERSION)
+        {
+            handleMeasureConversion(rowIterator, sizeOfParams, returnedList);
+        }
+        else {
+            //ignore header row
+            rowIterator.next();
+            //Loop through rows.
+            while (rowIterator.hasNext())
+            {
+                Row row = rowIterator.next();
+                if (row != null)
+                {
+                    handleRow(sizeOfParams, row, returnedList);
+                }
+
+            }
         }
 
         return returnedList;
@@ -108,5 +118,43 @@ public class  Excel2String
         }
             return picturesMap;
         }
+
+    public void handleMeasureConversion(Iterator<Row> rowIterator, int sizeOfParams,  List<String[]> returnedList)
+    {
+
+        //Get first record which is to_unit names
+        Row row = rowIterator.next();
+        int lastColumn = row.getLastCellNum();
+        int numberOfMeasureUnits = lastColumn-1;
+        String [][] measureConversionString = new String[numberOfMeasureUnits][sizeOfParams];
+        //    int i=0;//String array
+        //change this depending on the length of your sheet
+        String[] csvdata = new String[numberOfMeasureUnits];
+        for (int cn = 1; cn < lastColumn; cn++)
+        {
+            handleCell(cn, row, csvdata);
+        }
+
+        //Loop through rows.
+        while (rowIterator.hasNext()) {
+            //read first row with real values
+            row = rowIterator.next();
+            lastColumn = row.getLastCellNum();
+            String[] measureParams = new String[lastColumn];
+            for (int cn = 0; cn < lastColumn; cn++) {
+                handleCell(cn, row, measureParams);
+                if (cn>0) {
+                    measureConversionString[cn-1][0] = measureParams[0];
+                    measureConversionString[cn-1][1] = csvdata[cn];
+                    measureConversionString[cn-1][2] = measureParams[cn];
+                    returnedList.add(measureConversionString[cn-1]);
+
+                }
+            }
+        }
+
+
+
+    }
 
 }

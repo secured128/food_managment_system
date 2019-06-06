@@ -48,6 +48,8 @@ public class FileUploadController {
     private RecipeInstructionsOrderDBRepository recipeInstructionsOrderDBRepository;
     @Autowired
     private RecipeProductsDBRepository recipeProductsDBRepository;
+    @Autowired
+    private MeasureConversionDBRepository measureConversionDBRepository;
 
 @RequestMapping(method = GET, path = "/uploadGeneralFile")
 
@@ -73,7 +75,7 @@ public class FileUploadController {
                 Excel2String excel2Csv = new Excel2String();
                 XSSFSheet my_worksheet = my_xls_workbook.getSheetAt(sheetNumber);
 
-                List<String[]> sheetValues = excel2Csv.convert2String(numOfParams, my_worksheet );
+                List<String[]> sheetValues = excel2Csv.convert2String(numOfParams, my_worksheet, excelSheetsOrder );
                 int imageColumn = setImageColumn(excelSheetsOrder);
                 HashMap<String, byte[]> picturesMap = null;
                 if (imageColumn>0) {
@@ -101,6 +103,7 @@ public class FileUploadController {
         productDBRepository.deleteAll();
         supplierDBRepository.deleteAll();
         unitsDBRepository.deleteAll();
+        measureConversionDBRepository.deleteAll();
     }
 
     private int  setNumOfParams(ExcelSheetsOrder excelSheetsOrder)
@@ -128,6 +131,9 @@ public class FileUploadController {
                 break;
             case RECIPE_PRODUCTS:
                 numOfParams = RecipeProductsDB.NUMBER_OF_PARAMS;
+                break;
+            case MEASURE_CONVERSION:
+                numOfParams = MeasureConversionDB.NUMBER_OF_PARAMS;
                 break;
             default:
                 break;
@@ -210,6 +216,14 @@ public class FileUploadController {
                     recipeProductsDBRepository.save(nextRowDB);
                 }
                 break;
+            case MEASURE_CONVERSION:
+                while (iterator.hasNext())
+                {
+                    String[] nextRow = iterator.next();
+                    MeasureConversionDB nextRowDB = new MeasureConversionDB(nextRow);
+                    measureConversionDBRepository.save(nextRowDB);
+                }
+                break;
             default:
                 break;
         }
@@ -217,5 +231,5 @@ public class FileUploadController {
 
     public enum ExcelSheetsOrder{
         UNITS, SUPPLIERS, PRODUCT, RECIPE_DESCRIPTION,
-        INSTRUCTIONS_DESCRIPTION, RECIPE_INSTRUCTIONS_ORDER, RECIPE_PRODUCTS    }
+        INSTRUCTIONS_DESCRIPTION, RECIPE_INSTRUCTIONS_ORDER, RECIPE_PRODUCTS, MEASURE_CONVERSION    }
 }

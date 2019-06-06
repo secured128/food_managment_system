@@ -143,8 +143,12 @@ ALTER TABLE public.instructions_description
     (
       id bigint NOT NULL,
       product_id bigint NOT NULL,
-      quantity numeric NOT NULL,
-      price numeric NOT NULL,
+      quantity_in_package numeric NOT NULL,
+      package_volume numeric NOT NULL,
+      package_unit character varying(255) NOT NULL,
+      price_per_package numeric NOT NULL,
+      total_price numeric NOT NULL,
+      quantity_for_recipes numeric NOT NULL,
       creation_date date not null,
       expiration_date date not null,
       placement character varying(255) NOT NULL,
@@ -185,6 +189,19 @@ ALTER TABLE public.instructions_description
     grant all on sequence transaction_log_seq to food_manager
 
 
+  CREATE TABLE public.measure_conversion
+    (  id bigint NOT NULL,
+      from_unit character varying(255) NOT NULL,
+      to_unit character varying(255) NOT NULL,
+      conversion_value numeric NOT NULL
+    )
+    WITH (
+      OIDS=FALSE
+    );
+    ALTER TABLE public.measure_conversion
+      OWNER TO food_manager;
+
+
 create sequence hibernate_sequence
 
 
@@ -201,6 +218,7 @@ drop table recipe_description;
 drop table product;
 drop table units;
 drop table suppliers;
+drop table measure_translation;
 
 drop table stock;
 drop table transaction_log;
