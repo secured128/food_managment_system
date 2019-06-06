@@ -68,7 +68,6 @@ CREATE TABLE public.product
     description character varying(255),
     unit character varying(255) NOT NULL REFERENCES units(unit_name),
     id_supplier bigint NOT NULL REFERENCES SUPPLIERS(id),
-    quantity_in_package NUMERIC NOT NULL ,
     CONSTRAINT product_pkey PRIMARY KEY (id)
   )
   WITH (

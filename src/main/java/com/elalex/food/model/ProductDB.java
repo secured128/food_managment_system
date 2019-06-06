@@ -49,9 +49,6 @@ public class ProductDB implements Serializable
     @Column(name = "idSupplier")
     private Long idSupplier;
 
-    @JsonProperty("quantityInPackage")
-    @Column(name = "quantity_in_package")
-    private Double quantityInPackage;
 
     public ProductDB( )
     {
@@ -64,8 +61,7 @@ public class ProductDB implements Serializable
         this.setCode2((long) Double.parseDouble(dbStructure[2]));
         this.setDescription(dbStructure[3]);
         this.setUnit(dbStructure[4]);
-        this.setIdSupplier((long) Double.parseDouble(dbStructure[5]));
-        this.setQuantityInPackage(Double.parseDouble(dbStructure[6]));
+        this.setIdSupplier((long) Double.parseDouble(dbStructure[6]));
 
     }
 
@@ -78,7 +74,6 @@ public class ProductDB implements Serializable
         this.setDescription(productDB.getDescription());
         this.setUnit(productDB.getUnit());
         this.setIdSupplier(productDB.getIdSupplier());
-        this.setQuantityInPackage(productDB.getQuantityInPackage());
     }
 
 
@@ -143,11 +138,4 @@ public class ProductDB implements Serializable
     }
 
 
-    public Double getQuantityInPackage() {
-        return quantityInPackage;
-    }
-
-    public void setQuantityInPackage(Double quantityInPackage) {
-        this.quantityInPackage = quantityInPackage;
-    }
 }
