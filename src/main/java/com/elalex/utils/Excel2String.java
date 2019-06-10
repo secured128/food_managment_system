@@ -151,13 +151,12 @@ public class  Excel2String {
                     //Populste from_unit value
                     if (cn == 0) {
                         for (int i = fromUnitIndx; i < fromUnitIndx + numberOfUnits; i++) {
-                            measureConversionString[fromUnitIndx][0] = cellValue[0];
+                            measureConversionString[i][0] = cellValue[0];
                             System.out.print (" "+measureConversionString[fromUnitIndx][0] );
                         }
                         System.out.println();
                     } else {
-                        measureConversionString[fromUnitIndx + cn][2] = cellValue[0];
-                        System.out.print (" "+measureConversionString[fromUnitIndx + cn][2]);
+                        measureConversionString[fromUnitIndx + cn-1][2] = cellValue[0];
                     }
 
                    /* for (int countOfToUnitName = indexOfToUnitName; countOfToUnitName < numOfTableRows; countOfToUnitName=countOfToUnitName+numberOfUnits)
@@ -178,10 +177,8 @@ public class  Excel2String {
         for (int i=0;i<numOfTableRows;i++)
         {
             System.out.println();
-            for (int j =0; j<3; j++)
-            {
-                System.out.print (" "+measureConversionString[i][j]);
-            }
+            returnedList.add(measureConversionString[i]);
+
         }
 
     }
