@@ -12,31 +12,25 @@ import java.util.List;
 
 import static com.elalex.FileUploadController.ExcelSheetsOrder.MEASURE_CONVERSION;
 
-public class  Excel2String
-{
+public class  Excel2String {
 
 
-    public List<String[]> convert2String( int sizeOfParams, XSSFSheet my_worksheet, FileUploadController.ExcelSheetsOrder excelSheetsOrder) throws Exception
-    {
+    public List<String[]> convert2String(int sizeOfParams, XSSFSheet my_worksheet, FileUploadController.ExcelSheetsOrder excelSheetsOrder) throws Exception {
 
         System.out.println("inside HSSFWorkbook");
         List<String[]> returnedList = new ArrayList<String[]>();
         // To iterate over the rows
 
         Iterator<Row> rowIterator = my_worksheet.iterator();
-        if (excelSheetsOrder==MEASURE_CONVERSION)
-        {
+        if (excelSheetsOrder == MEASURE_CONVERSION) {
             handleMeasureConversion(rowIterator, sizeOfParams, returnedList);
-        }
-        else {
+        } else {
             //ignore header row
             rowIterator.next();
             //Loop through rows.
-            while (rowIterator.hasNext())
-            {
+            while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if (row != null)
-                {
+                if (row != null) {
                     handleRow(sizeOfParams, row, returnedList);
                 }
 
@@ -46,48 +40,53 @@ public class  Excel2String
         return returnedList;
     }
 
-    private void handleRow(int sizeOfParams, Row row, List<String[]> returnedList)
-    {
+    private void handleRow(int sizeOfParams, Row row, List<String[]> returnedList) {
         //    int i=0;//String array
         //change this depending on the length of your sheet
         String[] csvdata = new String[sizeOfParams];
         int lastColumn = Math.min(row.getLastCellNum(), sizeOfParams);
 
-        for (int cn = 0; cn < lastColumn; cn++)
-        {
-            handleCell(cn, row, csvdata);
+        for (int cn = 0; cn < lastColumn; cn++) {
+            handleCell(cn, row, csvdata, cn);
         }
-        if (csvdata[0] != null)
-        {
+        if (csvdata[0] != null) {
             returnedList.add(csvdata);
         }
     }
 
-    private void handleCell(int cn, Row row, String[] csvdata )
-    {
+    private void handleCell(int cn, Row row, String[] csvdata, int csvdataIndx) {
         Cell cell = row.getCell(cn, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-        if (cell != null)
-        {
-            switch (cell.getCellType())
-            { //Identify CELL type
+        if (cell != null) {
+            switch (cell.getCellType()) { //Identify CELL type
                 //you need to add more code here based on
                 //your requirement / transformations
                 case STRING:
-                    csvdata[cn] = cell.getStringCellValue();
+                    csvdata[csvdataIndx] = cell.getStringCellValue();
                     break;
                 case NUMERIC:
                     double a = (double) cell.getNumericCellValue();
-                    csvdata[cn] = String.valueOf(a);
+                    csvdata[csvdataIndx] = String.valueOf(a);
                     break;
                 case BLANK:
-                    csvdata[cn] = null;
+                    csvdata[csvdataIndx] = null;
+                    break;
+                case FORMULA:
+                    switch (cell.getCachedFormulaResultType()) {
+                        case NUMERIC:
+                            double dblVal = cell.getNumericCellValue();
+                            csvdata[csvdataIndx] = String.valueOf(dblVal);
+                            break;
+                        case STRING:
+                            csvdata[csvdataIndx] = cell.getRichStringCellValue().getString();
+                            break;
+                    }
                     break;
             }
 
         }
     }
 
-    public  HashMap<String, byte[]> readImages(XSSFSheet sheet, int imageColumn) {
+    public HashMap<String, byte[]> readImages(XSSFSheet sheet, int imageColumn) {
         int idColumn = 0;
         HashMap<String, byte[]> picturesMap = new HashMap<>();
         XSSFDrawing drawing = sheet.getDrawingPatriarch();
@@ -116,45 +115,93 @@ public class  Excel2String
                 }
             }
         }
-            return picturesMap;
-        }
+        return picturesMap;
+    }
 
-    public void handleMeasureConversion(Iterator<Row> rowIterator, int sizeOfParams,  List<String[]> returnedList)
-    {
+    public void handleMeasureConversion(Iterator<Row> rowIterator, int sizeOfParams, List<String[]> returnedList) {
+
 
         //Get first record which is to_unit names
         Row row = rowIterator.next();
         int lastColumn = row.getLastCellNum();
-        int numberOfMeasureUnits = lastColumn-1;
-        String [][] measureConversionString = new String[numberOfMeasureUnits][sizeOfParams];
-        //    int i=0;//String array
-        //change this depending on the length of your sheet
-        String[] csvdata = new String[numberOfMeasureUnits];
-        for (int cn = 1; cn < lastColumn; cn++)
-        {
-            handleCell(cn, row, csvdata);
-        }
+        int numberOfUnits = lastColumn - 1;
+        int numOfTableRows = numberOfUnits * numberOfUnits;
+        String[][] measureConversionString = new String[numOfTableRows][sizeOfParams];
 
-        //Loop through rows.
+        //change this depending on the length of your sheet
+        String[] toUnitName = new String[1];
+        for (int cn = 1; cn < lastColumn; cn++) {
+            int indexOfToUnitName = cn - 1;
+            handleCell(cn, row, toUnitName, 0);
+            for (int countOfToUnitName = indexOfToUnitName; countOfToUnitName < numOfTableRows; countOfToUnitName = countOfToUnitName + numberOfUnits) {
+                measureConversionString[countOfToUnitName][1] = toUnitName[0];
+            }
+
+        }
+        //Handle rest of rows: first column is from_unit name, other fields are values.
         while (rowIterator.hasNext()) {
-            //read first row with real values
             row = rowIterator.next();
-            lastColumn = row.getLastCellNum();
-            String[] measureParams = new String[lastColumn];
-            for (int cn = 0; cn < lastColumn; cn++) {
-                handleCell(cn, row, measureParams);
-                if (cn>0) {
-                    measureConversionString[cn-1][0] = measureParams[0];
-                    measureConversionString[cn-1][1] = csvdata[cn];
-                    measureConversionString[cn-1][2] = measureParams[cn];
-                    returnedList.add(measureConversionString[cn-1]);
+            int rownum = row.getRowNum();
+            int fromUnitIndx = (rownum - 1) * numberOfUnits;
+            System.out.println("rownum " + rownum);
+            String[] cellValue = new String[1];
+            if (row != null) {
+                for (int cn = 0; cn < lastColumn; cn++) {
+                    handleCell(cn, row, cellValue, 0);
+                    //Populste from_unit value
+                    if (cn == 0) {
+                        for (int i = fromUnitIndx; i < fromUnitIndx + numberOfUnits; i++) {
+                            measureConversionString[fromUnitIndx][0] = cellValue[0];
+                            System.out.print (" "+measureConversionString[fromUnitIndx][0] );
+                        }
+                        System.out.println();
+                    } else {
+                        measureConversionString[fromUnitIndx + cn][2] = cellValue[0];
+                        System.out.print (" "+measureConversionString[fromUnitIndx + cn][2]);
+                    }
+
+                   /* for (int countOfToUnitName = indexOfToUnitName; countOfToUnitName < numOfTableRows; countOfToUnitName=countOfToUnitName+numberOfUnits)
+                    {
+                        measureConversionString[countOfToUnitName][1]  = toUnitName[0];
+                    }*/
+
+                    //     }
+                    //     }
+
 
                 }
+                System.out.println();
+            }
+
+
+        }
+        for (int i=0;i<numOfTableRows;i++)
+        {
+            System.out.println();
+            for (int j =0; j<3; j++)
+            {
+                System.out.print (" "+measureConversionString[i][j]);
             }
         }
 
-
-
     }
 
+
 }
+
+  //if (row != null)
+     //     {
+    //      for (int cn = 0; cn < lastColumn; cn++)
+    //    {
+    //    handleCell(cn, row, toUnitName, 0);
+    //    if (cn==0)
+    //    {
+     //   for (int i=rownum; i<)
+    //    }
+                   /* for (int countOfToUnitName = indexOfToUnitName; countOfToUnitName < numOfTableRows; countOfToUnitName=countOfToUnitName+numberOfUnits)
+                    {
+                        measureConversionString[countOfToUnitName][1]  = toUnitName[0];
+                    }*/
+
+   //     }
+   //     }
