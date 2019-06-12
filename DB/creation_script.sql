@@ -192,7 +192,8 @@ ALTER TABLE public.instructions_description
     (  id bigint NOT NULL,
       from_unit character varying(255) NOT NULL,
       to_unit character varying(255) NOT NULL,
-      conversion_value numeric NOT NULL
+      conversion_value numeric NOT NULL,
+      CONSTRAINT measure_conversion PRIMARY KEY (id)
     )
     WITH (
       OIDS=FALSE
