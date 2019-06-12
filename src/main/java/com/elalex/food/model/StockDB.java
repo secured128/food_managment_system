@@ -19,7 +19,22 @@ import java.util.Date;
 @Entity
 @Table(name = "stock")
 
+/*
+id bigint NOT NULL,
+      product_id bigint NOT NULL,
+      quantity_in_package numeric NOT NULL,
+      number_of_packages numeric NOT NULL,
+      package_unit character varying(255) NOT NULL,
+      price_per_package numeric NOT NULL,
+      total_price numeric NOT NULL,
+      quantity_for_recipes numeric NOT NULL,
+      creation_date date not null,
+      expiration_date date not null,
+      placement character varying(255) NOT NULL,
+      used_quantity numeric  NOT NULL,
+      CONSTRAINT stock_pkey PRIMARY KEY (id)
 
+ */
 
 
 public class StockDB implements Serializable
@@ -34,17 +49,37 @@ public class StockDB implements Serializable
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @JsonProperty("invoiceId")
+    @Column(name = "invoice_id")
+    private String invoiceId;
+
     @JsonProperty("productId")
     @Column(name = "product_id")
     private long productId;
 
-    @JsonProperty("quantity")
-    @Column(name = "quantity")
-    private Double quantity;
+    @JsonProperty("quantityInPackage")
+    @Column(name = "quantity_in_package")
+    private Double quantityInPackage;
 
-    @JsonProperty("price")
-    @Column(name = "price")
-    private Double price;
+    @JsonProperty("numberOfPackages")
+    @Column(name = "number_of_packages")
+    private Double numberOfPackages;
+
+    @JsonProperty("packageUnit")
+    @Column(name = "package_unit")
+    private String packageUnit;
+
+    @JsonProperty("pricePerPackage")
+    @Column(name = "price_per_package")
+    private Double pricePerPackage;
+
+    @JsonProperty("totalPrice")
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+    @JsonProperty("quantityForRecipes")
+    @Column(name = "quantity_for_recipes")
+    private Double quantityForRecipes;
 
     @JsonProperty("creationDate")
     @Column(name = "creation_date")
@@ -70,14 +105,18 @@ public class StockDB implements Serializable
     }
     public StockDB(  String dbStructure[])throws Exception
     {
-        this.setId((long) Double.parseDouble(dbStructure[0]));
+        this.setInvoiceId(dbStructure[0]);
         this.setProductId((long) Double.parseDouble(dbStructure[1]));
-        this.setQuantity(Double.valueOf(dbStructure[2]));
-        this.setPrice(Double.valueOf(dbStructure[3]));
-        this.setCreationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[4]))  ;
-        this.setExpirationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[5]));
-        this.setPlacement(dbStructure[6]);
-        this.setUsedQuantity(Double.valueOf(dbStructure[7]));
+        this.setQuantityInPackage(Double.valueOf(dbStructure[2]));
+        this.setNumberOfPackages(Double.valueOf(dbStructure[3]));
+        this.setPackageUnit(dbStructure[4]);
+        this.setPricePerPackage(Double.valueOf(dbStructure[5]));
+        this.setTotalPrice(Double.valueOf(dbStructure[6]));
+        this.setQuantityForRecipes(Double.valueOf(dbStructure[7]));
+        this.setCreationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[8]))  ;
+        this.setExpirationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[9]));
+        this.setPlacement(dbStructure[10]);
+        this.setUsedQuantity(Double.valueOf(dbStructure[11]));
 
     }
 
@@ -85,9 +124,14 @@ public class StockDB implements Serializable
     {
         StockDB stockDB = getJsonMapper().readValue(json, StockDB.class);
         this.setId(stockDB.getId());
+        this.setInvoiceId(stockDB.getInvoiceId());
         this.setProductId(stockDB.getProductId());
-        this.setQuantity(stockDB.getQuantity());
-        this.setPrice(stockDB.getPrice());
+        this.setQuantityInPackage(stockDB.getQuantityInPackage());
+        this.setNumberOfPackages(stockDB.getNumberOfPackages());
+        this.setPackageUnit(stockDB.getPackageUnit());
+        this.setPricePerPackage(stockDB.getPricePerPackage());
+        this.setTotalPrice(stockDB.getTotalPrice());
+        this.setQuantityForRecipes(stockDB.getQuantityForRecipes());
         this.setCreationDate(stockDB.getCreationDate())  ;
         this.setExpirationDate(stockDB.getExpirationDate());
         this.setPlacement(stockDB.getPlacement());
@@ -133,23 +177,6 @@ public class StockDB implements Serializable
         this.productId = productId;
     }
 
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-
 
     public String getPlacement() {
         return placement;
@@ -183,4 +210,59 @@ public class StockDB implements Serializable
         this.usedQuantity = usedQuantity;
     }
 
+    public Double getQuantityInPackage() {
+        return quantityInPackage;
+    }
+
+    public void setQuantityInPackage(Double quantityInPackage) {
+        this.quantityInPackage = quantityInPackage;
+    }
+
+    public Double getNumberOfPackages() {
+        return numberOfPackages;
+    }
+
+    public void setNumberOfPackages(Double numberOfPackages) {
+        this.numberOfPackages = numberOfPackages;
+    }
+
+    public String getPackageUnit() {
+        return packageUnit;
+    }
+
+    public void setPackageUnit(String packageUnit) {
+        this.packageUnit = packageUnit;
+    }
+
+    public Double getPricePerPackage() {
+        return pricePerPackage;
+    }
+
+    public void setPricePerPackage(Double pricePerPackage) {
+        this.pricePerPackage = pricePerPackage;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Double getQuantityForRecipes() {
+        return quantityForRecipes;
+    }
+
+    public void setQuantityForRecipes(Double quantityForRecipes) {
+        this.quantityForRecipes = quantityForRecipes;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
 }

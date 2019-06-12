@@ -141,9 +141,10 @@ ALTER TABLE public.instructions_description
   CREATE TABLE public.stock
     (
       id bigint NOT NULL,
+      invoice_id character varying(255) NOT NULL,
       product_id bigint NOT NULL,
       quantity_in_package numeric NOT NULL,
-      package_volume numeric NOT NULL,
+      number_of_packages numeric NOT NULL,
       package_unit character varying(255) NOT NULL,
       price_per_package numeric NOT NULL,
       total_price numeric NOT NULL,
