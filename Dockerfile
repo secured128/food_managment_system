@@ -11,10 +11,10 @@ VOLUME /tmp
 EXPOSE 8080
 
 # The application's jar file
-ARG JAR_FILE=build/libs/parisbakery-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/culinarymanager-0.0.1.jar
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} parisbakery.jar
+ADD ${JAR_FILE} culinarymanager.jar
 
 # Run the jar file 
-CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=prod","/parisbakery.jar"]
+CMD ["java","-jar","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=prod","/culinarymanager.jar"]

@@ -4,13 +4,13 @@ Heroku commands :
 sudo -s
 heroku login
 heroku container:login (pojhi9078!)
-heroku container:push web -a parisbakery
-heroku container:release web -a parisbakery
-heroku open -a parisbakery
+heroku container:push web -a culinarymanager
+heroku container:release web -a culinarymanager
+heroku open -a culinarymanager
 
 Local run :
 
-docker run -p 8080:8080 parisbakery/parisbakery:latest
+docker run -p 8080:8080 com.elalex/culinarymanager:latest
 
 
 
