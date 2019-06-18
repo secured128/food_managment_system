@@ -141,6 +141,7 @@ ALTER TABLE public.instructions_description
   CREATE TABLE public.stock
     (
       id bigint NOT NULL,
+      supplier_name  character varying(255)NOT NULL,
       invoice_id character varying(255) NOT NULL,
       product_id bigint NOT NULL,
       quantity_in_package numeric NOT NULL,
@@ -159,6 +160,10 @@ ALTER TABLE public.instructions_description
     WITH (
       OIDS=FALSE
     );
+
+
+
+
     ALTER TABLE public.stock
       OWNER TO food_manager;
 
@@ -201,6 +206,22 @@ ALTER TABLE public.instructions_description
     );
     ALTER TABLE public.measure_conversion
       OWNER TO food_manager;
+
+
+
+CREATE TABLE public.invoice_description
+(
+  id bigint NOT NULL,
+  invoice_id character varying(255),
+  supplier_name character varying(255),
+  image bytea,
+  CONSTRAINT invoice_description PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.recipe_description
+  OWNER TO food_manager;
 
 
 create sequence hibernate_sequence

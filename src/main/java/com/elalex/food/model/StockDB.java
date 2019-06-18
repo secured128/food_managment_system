@@ -20,7 +20,9 @@ import java.util.Date;
 @Table(name = "stock")
 
 /*
-id bigint NOT NULL,
+  id bigint NOT NULL,
+      supplier_name  character varying(255)NOT NULL,
+      invoice_id character varying(255) NOT NULL,
       product_id bigint NOT NULL,
       quantity_in_package numeric NOT NULL,
       number_of_packages numeric NOT NULL,
@@ -32,7 +34,6 @@ id bigint NOT NULL,
       expiration_date date not null,
       placement character varying(255) NOT NULL,
       used_quantity numeric  NOT NULL,
-      CONSTRAINT stock_pkey PRIMARY KEY (id)
 
  */
 
@@ -48,6 +49,10 @@ public class StockDB implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @JsonProperty("supplierName")
+    @Column(name = "supplier_name")
+    private String supplierName;
 
     @JsonProperty("invoiceId")
     @Column(name = "invoice_id")
@@ -105,18 +110,19 @@ public class StockDB implements Serializable
     }
     public StockDB(  String dbStructure[])throws Exception
     {
-        this.setInvoiceId(dbStructure[0]);
-        this.setProductId((long) Double.parseDouble(dbStructure[1]));
-        this.setQuantityInPackage(Double.valueOf(dbStructure[2]));
-        this.setNumberOfPackages(Double.valueOf(dbStructure[3]));
-        this.setPackageUnit(dbStructure[4]);
-        this.setPricePerPackage(Double.valueOf(dbStructure[5]));
-        this.setTotalPrice(Double.valueOf(dbStructure[6]));
-        this.setQuantityForRecipes(Double.valueOf(dbStructure[7]));
-        this.setCreationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[8]))  ;
-        this.setExpirationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[9]));
-        this.setPlacement(dbStructure[10]);
-        this.setUsedQuantity(Double.valueOf(dbStructure[11]));
+        this.setSupplierName(dbStructure[0]);
+        this.setInvoiceId(dbStructure[1]);
+        this.setProductId((long) Double.parseDouble(dbStructure[2]));
+        this.setQuantityInPackage(Double.valueOf(dbStructure[3]));
+        this.setNumberOfPackages(Double.valueOf(dbStructure[4]));
+        this.setPackageUnit(dbStructure[5]);
+        this.setPricePerPackage(Double.valueOf(dbStructure[6]));
+        this.setTotalPrice(Double.valueOf(dbStructure[7]));
+        this.setQuantityForRecipes(Double.valueOf(dbStructure[8]));
+        this.setCreationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[9]))  ;
+        this.setExpirationDate(new SimpleDateFormat("dd/MM/yyyy").parse(dbStructure[10]));
+        this.setPlacement(dbStructure[11]);
+        this.setUsedQuantity(Double.valueOf(dbStructure[12]));
 
     }
 
@@ -124,6 +130,7 @@ public class StockDB implements Serializable
     {
         StockDB stockDB = getJsonMapper().readValue(json, StockDB.class);
         this.setId(stockDB.getId());
+        this.setSupplierName(stockDB.getSupplierName());
         this.setInvoiceId(stockDB.getInvoiceId());
         this.setProductId(stockDB.getProductId());
         this.setQuantityInPackage(stockDB.getQuantityInPackage());
@@ -264,5 +271,13 @@ public class StockDB implements Serializable
 
     public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }
