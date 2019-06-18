@@ -75,9 +75,9 @@ public class SuppliersController {
         try {
             List<RecipeDescriptionDB> suppliersList = new ArrayList<>();
 
-            Iterable<RecipeDescriptionDB> suppliersAll = recipeDescriptionDBRepository.findAll();
-            if (suppliersAll != null) {
-                Iterator<RecipeDescriptionDB> supplierIterator = suppliersAll.iterator();
+            Iterable<RecipeDescriptionDB> recipeAll = recipeDescriptionDBRepository.findAll();
+            if (recipeAll != null) {
+                Iterator<RecipeDescriptionDB> supplierIterator = recipeAll.iterator();
                 while (supplierIterator.hasNext()) {
                     suppliersList.add(supplierIterator.next());
                 }

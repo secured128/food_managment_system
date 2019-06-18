@@ -42,7 +42,7 @@ public class CheckStock {
         while  (stockDBIterator.hasNext())
         {
             StockDB stockDBIteratorRec = (StockDB)stockDBIterator.next();
-            stockLeftAmount = BigDecimal.valueOf(stockDBIteratorRec.getQuantity()).subtract(BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity()));
+            stockLeftAmount = BigDecimal.valueOf(stockDBIteratorRec.getQuantityForRecipes()).subtract(BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity()));
             stockUsedAmount = BigDecimal.valueOf(stockDBIteratorRec.getUsedQuantity());
             recipeProductAmount= BigDecimal.valueOf(productHashMap.get(stockDBIteratorRec.getProductId()).getCalculatedQuantity());
             SelectRecipeQueryDB recipeProductRec = productHashMap.get(stockDBIteratorRec.getProductId());
@@ -55,7 +55,7 @@ public class CheckStock {
             else
             {
                 recipeProductRec.setCalculatedQuantity(recipeProductAmount.subtract(stockLeftAmount).doubleValue());
-                stockDBIteratorRec.setUsedQuantity(stockDBIteratorRec.getQuantity());
+                stockDBIteratorRec.setUsedQuantity(stockDBIteratorRec.getQuantityForRecipes());
                 updateProductPlacementRecord(productsPlacementHashMap, stockLeftAmount,  stockDBIteratorRec, recipeProductRec);
             }
             productHashMap.put(stockDBIteratorRec.getProductId(),recipeProductRec);
