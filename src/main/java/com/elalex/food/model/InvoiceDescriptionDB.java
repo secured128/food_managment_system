@@ -1,94 +1,79 @@
 
 package com.elalex.food.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.HashMap;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
-/*
- id bigint NOT NULL,
-  supplier_name character varying(255),
-  invoice_id character varying(255),
-  image bytea,
-  CONSTRAINT invoice_description PRIMARY KEY (id)
- */
-//@JsonPropertyOrder({"id"})
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(
+        ignoreUnknown = true
+)
 @Entity
-@Table(name = "invoice_description")
-public class InvoiceDescriptionDB implements Serializable
-{
-    static public final  int NUMBER_OF_PARAMS=4;//we put 4 and npt 5, since image is not uploaded from excel
-    static public final  int IMAGE_COLUMN=4;
+@Table(
+        name = "invoice_description"
+)
+public class InvoiceDescriptionDB implements Serializable {
+    public static final int NUMBER_OF_PARAMS = 4;
+    public static final int IMAGE_COLUMN = 4;
     @JsonIgnore
     @Transient
     private ObjectMapper jsonMapper = new ObjectMapper();
-
-
     @JsonProperty("id")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+    @Column(
+            name = "id"
+    )
+    private Long id;
     @JsonProperty("supplierName")
-    @Column(name = "supplier_name")
+    @Column(
+            name = "supplier_name"
+    )
     private String supplierName;
-
     @JsonProperty("invoiceId")
-    @Column(name = "invoice_id")
+    @Column(
+            name = "invoice_id"
+    )
     private String invoiceId;
+    @JsonProperty("invoiceImage")
+    @Column(
+            name = "invoice_image"
+    )
+    private String invoiceImage;
 
-    @JsonProperty("image")
-    @Column(name = "image")
-    private byte[] image;
-
-
-    public InvoiceDescriptionDB()
-    {
+    public InvoiceDescriptionDB() {
     }
 
-    public InvoiceDescriptionDB(String dbStructure[], HashMap<String, byte[]> picturesMap)
-    {
-        this.setSupplierName(dbStructure[0]);
-        this.setInvoiceId(dbStructure[1]);
-        if (picturesMap != null)
-         this.setImage(picturesMap.get(dbStructure[0]));
-
-    }
-
-    public InvoiceDescriptionDB(String json) throws Exception
-    {
-        InvoiceDescriptionDB invoiceDescriptionDB = getJsonMapper().readValue(json, InvoiceDescriptionDB.class);
+    public InvoiceDescriptionDB(String json) throws Exception {
+        InvoiceDescriptionDB invoiceDescriptionDB = (InvoiceDescriptionDB)this.getJsonMapper().readValue(json, InvoiceDescriptionDB.class);
         this.setId(invoiceDescriptionDB.getId());
         this.setSupplierName(invoiceDescriptionDB.getSupplierName());
         this.setInvoiceId(invoiceDescriptionDB.getInvoiceId());
-        this.setImage(invoiceDescriptionDB.getImage());
+        this.setInvoiceImage(invoiceDescriptionDB.getInvoiceImage());
     }
 
-
-    @Override
     public String toString() {
         StringWriter sw = new StringWriter();
+
         try {
-            new ObjectMapper().writeValue(sw, this);
+            (new ObjectMapper()).writeValue(sw, this);
             return sw.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException var3) {
+            var3.printStackTrace();
             return null;
         }
     }
 
-
     public ObjectMapper getJsonMapper() {
-        return jsonMapper;
+        return this.jsonMapper;
     }
 
     public void setJsonMapper(ObjectMapper jsonMapper) {
@@ -96,7 +81,7 @@ public class InvoiceDescriptionDB implements Serializable
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -104,7 +89,7 @@ public class InvoiceDescriptionDB implements Serializable
     }
 
     public String getSupplierName() {
-        return supplierName;
+        return this.supplierName;
     }
 
     public void setSupplierName(String supplierName) {
@@ -112,18 +97,18 @@ public class InvoiceDescriptionDB implements Serializable
     }
 
     public String getInvoiceId() {
-        return invoiceId;
+        return this.invoiceId;
     }
 
     public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getInvoiceImage() {
+        return this.invoiceImage;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setInvoiceImage(String invoiceImage) {
+        this.invoiceImage = invoiceImage;
     }
 }
